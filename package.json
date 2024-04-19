@@ -1,0 +1,22 @@
+{
+  "name": "linplugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db": "npm run build && npm run deploy-win",
+    "build": "electron-vite build",
+    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"D:\\Program Files\\Tencent\\QQNT\\resources\\app\\LiteLoaderQQNT-main\\plugins\\Lin-Plugin\\\"\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash": "^4.17.0",
+    "@types/node": "^20.12.7",
+    "electron": "^30.0.0",
+    "electron-vite": "^2.1.0",
+    "lodash": "^4.17.21",
+    "typescript": "^5.4.5",
+    "vite-plugin-cp": "^4.0.8"
+  }
+}
