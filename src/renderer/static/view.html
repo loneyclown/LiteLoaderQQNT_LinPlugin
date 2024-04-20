@@ -1,0 +1,42 @@
+<setting-section data-title="版本" class="versions">
+	<setting-panel>
+		<setting-list data-direction="column" class="new">
+			<setting-item>
+				<setting-text>当前LinPlugin的版本是 <span>0.1.0</span></setting-text>
+				<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
+			</setting-item>
+		</setting-list>
+	</setting-panel>
+</setting-section>
+
+<setting-section class="function">
+	<!-- <setting-panel>
+		<setting-list data-direction="column" class="loader">
+			<setting-item>
+				<setting-text>启用插件加载器</setting-text>
+				<setting-switch></setting-switch>
+			</setting-item>
+		</setting-list>
+	</setting-panel> -->
+	<setting-panel>
+		<setting-list
+			data-title="云国脚本"
+			is-collapsible
+			data-direction="column"
+			class="yunguo"
+		>
+			<setting-item class="yunguo-uid">
+				<setting-text>你的UID: <input id="yunguoUid" /></setting-text>
+				<setting-button data-type="secondary">保存</setting-button>
+			</setting-item>
+			<setting-item class="yunguo-shuaji">
+				<setting-text>刷级群: <input id="shuaJiGroupId" /></setting-text>
+				<setting-switch></setting-switch>
+			</setting-item>
+			<setting-item class="yunguo-pugong">
+				<setting-text>普攻群: <input id="puGongGroupId" /></setting-text>
+				<setting-switch></setting-switch>
+			</setting-item>
+		</setting-list>
+	</setting-panel>
+</setting-section>
