@@ -1,27 +1,27 @@
 {
-  "manifest_version": 4,
-  "type": "extension",
-  "name": "LinPlugin",
-  "slug": "LinPlugin",
-  "description": "LiteLoaderQQNT的插件模板",
-  "version": "0.1.0",
-  "icon": null,
-  "thumb": null,
-  "authors": [
-      {
-          "name": "loneyclown",
-          "link": "https://github.com/loneyclown"
-      }
-  ],
-  "dependencies": [],
-  "platform": [
-      "win32",
-      "linux",
-      "darwin"
-  ],
-  "injects": {
-      "renderer": "./renderer/index.mjs",
-      "main": "./main/index.js",
-      "preload": "./preload/preload.js"
-  }
+    "manifest_version": 4,
+    "type": "extension",
+    "name": "LinPlugin",
+    "slug": "LinPlugin",
+    "description": "LiteLoaderQQNT的插件模板",
+    "version": "1.0.0",
+    "icon": null,
+    "thumb": null,
+    "authors": [
+        {
+            "name": "loneyclown",
+            "link": "https://github.com/loneyclown"
+        }
+    ],
+    "dependencies": [],
+    "platform": [
+        "win32",
+        "linux",
+        "darwin"
+    ],
+    "injects": {
+        "renderer": "./renderer/index.mjs",
+        "main": "./main/index.js",
+        "preload": "./preload/preload.js"
+    }
 }
