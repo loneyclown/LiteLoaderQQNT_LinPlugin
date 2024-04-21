@@ -1,42 +1,88 @@
-<setting-section data-title="版本" class="versions">
-	<setting-panel>
-		<setting-list data-direction="column" class="new">
-			<setting-item>
-				<setting-text>当前LinPlugin的版本是 <span>0.1.0</span></setting-text>
-				<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
-			</setting-item>
-		</setting-list>
-	</setting-panel>
-</setting-section>
+<div class="lin-plugin">
+	<setting-section data-title="版本" class="versions">
+		<setting-panel>
+			<setting-list data-direction="column" class="new">
+				<setting-item>
+					<setting-text>当前LinPlugin的版本是 <span>0.1.0</span></setting-text>
+					<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
+				</setting-item>
+			</setting-list>
+		</setting-panel>
+	</setting-section>
 
-<setting-section class="function">
-	<!-- <setting-panel>
-		<setting-list data-direction="column" class="loader">
-			<setting-item>
-				<setting-text>启用插件加载器</setting-text>
-				<setting-switch></setting-switch>
-			</setting-item>
-		</setting-list>
-	</setting-panel> -->
-	<setting-panel>
-		<setting-list
-			data-title="云国脚本"
-			is-collapsible
-			data-direction="column"
-			class="yunguo"
-		>
-			<setting-item class="yunguo-uid">
-				<setting-text>你的UID: <input id="yunguoUid" /></setting-text>
-				<setting-button data-type="secondary">保存</setting-button>
-			</setting-item>
-			<setting-item class="yunguo-shuaji">
-				<setting-text>刷级群: <input id="shuaJiGroupId" /></setting-text>
-				<setting-switch></setting-switch>
-			</setting-item>
-			<setting-item class="yunguo-pugong">
-				<setting-text>普攻群: <input id="puGongGroupId" /></setting-text>
-				<setting-switch></setting-switch>
-			</setting-item>
-		</setting-list>
-	</setting-panel>
-</setting-section>
+	<setting-section data-title="云国脚本" class="yunguo">
+		<setting-panel>
+			<setting-list data-direction="column">
+				<setting-item class="yunguo-shuaji">
+					<div class="line-item">
+						<div class="row between">
+							<setting-text>刷级功能</setting-text>
+							<setting-switch key="shuajiFlag"></setting-switch>
+						</div>
+						<div class="row between">
+							<setting-text data-type="secondary"
+								>实现自动游历和自动战斗。</setting-text
+							>
+						</div>
+						<div class="row between">
+							<setting-text data-type="secondary"
+								>设置好需要刷级的群号，然后打开开关，在设定好的群内手动发送一次简单游历即可。</setting-text
+							>
+						</div>
+						<div style="margin-top: 10px" class="row">
+							<setting-text>刷级群: </setting-text>
+							<input key="shuajiGroupId" placeholder="请输入需要刷级的群号" />
+							<setting-text style="margin-right: 10px">自动升级: </setting-text>
+							<setting-switch key="shuajiAutoUpgradeFlag"></setting-switch>
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item class="yunguo-pugong">
+					<div class="line-item">
+						<div class="row between">
+							<setting-text>BOSS功能</setting-text>
+							<setting-switch key="bossFlag"></setting-switch>
+						</div>
+						<div class="row">
+							<setting-text data-type="secondary"
+								>实现自动普攻和吃药，可以设置定时挑战某个BOSS。</setting-text
+							>
+						</div>
+						<div class="row">
+							<setting-text data-type="secondary"
+								>设置好普攻群号和相关配置，然后去设置好的群里普攻一下。</setting-text
+							>
+						</div>
+						<div style="margin-top: 10px" class="row">
+							<setting-text>普攻群: </setting-text>
+							<input key="puGongGroupId" placeholder="请输入需要普攻的群号" />
+						</div>
+						<div style="margin-top: 10px" class="row">
+							<setting-text>自动吃药</setting-text>
+							<setting-switch key="pugongAutoYaoFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 6px" class="row">
+							<setting-text>药水指令: </setting-text>
+							<input key="yaoshuiCmd" placeholder="请输入药水指令" />
+							<setting-text data-type="secondary"
+								>设定喝药水的指令比如：/使用1 1</setting-text
+							>
+						</div>
+						<div style="margin-top: 10px" class="row">
+							<setting-text>自动挑战</setting-text>
+							<setting-switch key="autoChallengeFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 6px" class="row">
+							<setting-text>挑战指令: </setting-text>
+							<input key="challengeCmd" placeholder="请输入挑战指令" />
+							<setting-text data-type="secondary"
+								>设定挑战BOSS的指令比如: 挑战副本16确定</setting-text
+							>
+						</div>
+					</div>
+				</setting-item>
+			</setting-list>
+		</setting-panel>
+	</setting-section>
+</div>

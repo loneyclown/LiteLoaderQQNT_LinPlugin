@@ -1,6 +1,15 @@
 import _ from "lodash";
 
-export type ConfigKey = "yunguoUid" | "shuajiFlag" | "shuajiGroupId";
+export type ConfigKey =
+	| "shuajiFlag"
+	| "bossFlag"
+	| "shuajiGroupId"
+	| "puGongGroupId"
+	| "shuajiAutoUpgradeFlag"
+	| "pugongAutoYaoFlag"
+	| "yaoshuiCmd"
+	| "autoChallengeFlag"
+	| "challengeCmd";
 
 class Config {
 	private _config: any = {};
@@ -27,13 +36,13 @@ class Config {
 		if (!init) {
 			await globalThis.LiteLoader.api.config.set(
 				"LinPlugin",
-				_.omit(this._config, ["shuajiFlag"])
+				_.omit(this._config, ["shuajiFlag", "bossFlag"])
 			);
 		}
 	}
 
 	getConfig(key: ConfigKey) {
-		return this._config[key];
+		return this._config[key] || null;
 	}
 
 	async setConfig(key: ConfigKey, value: any) {

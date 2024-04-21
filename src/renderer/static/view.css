@@ -1,0 +1,58 @@
+.lin-plugin {
+}
+
+.lin-plugin.drak setting-item input {
+	color: rgb(223, 224, 216);
+}
+
+.lin-plugin.light setting-item input {
+	color: rgb(28, 26, 40);
+}
+
+.yunguo {
+}
+
+.yunguo setting-item input {
+	color: rgb(223, 231, 185);
+	margin: 0 10px;
+	padding: 4px 8px;
+	border: 1px solid;
+	border-radius: 4px;
+}
+
+.lin-plugin .line-item {
+	width: 100%;
+}
+
+.lin-plugin .line-item .row {
+	width: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.lin-plugin .line-item .row.between {
+	justify-content: space-between;
+}
+
+.lin-plugin .line-item .row.column {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.lin-plugin .line-item .row.column .row-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.lin-plugin .line-item .row.column .row-item .row-item-label {
+	width: 80px;
+}
+
+.lin-plugin .line-item .row.column .row-item .row-item-input {
+}
+
+.lin-plugin .line-item .row setting-switch {
+	margin-left: 10px;
+}
