@@ -122,7 +122,7 @@ class Yunguo extends BaseEvent {
 			const match = this.markdownElementContent.match(regex);
 			const bossHp = match?.[1];
 
-			if (bossHp) {
+			if (bossHp && this.markdownElementContent.includes("请决定下一步操作")) {
 				await sleep(3000);
 				this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
 			}
