@@ -165,6 +165,14 @@ class Yunguo extends BaseEvent {
 				}
 			}
 
+			if (this.markdownElementContent.includes("你击败了boss")) {
+				const autoChallengeFlag = linPluginAPI.getConfig("autoChallengeFlag");
+				if (autoChallengeFlag) {
+					await sleep(3000);
+					this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
+				}
+			}
+
 			// if (this.markdownElementContent.includes("你距离下一次挑战boss，还有")) {
 			// 	const regx = /你距离下一次挑战boss，还有(\d+)秒冷却/;
 			// 	const seconds = this.markdownElementContent.match(regx)?.[1];
