@@ -121,10 +121,29 @@ class Yunguo extends BaseEvent {
 			const regex = /boss血量：(\d+)\r/;
 			const match = this.markdownElementContent.match(regex);
 			const bossHp = match?.[1];
+
 			if (bossHp) {
-				await sleep(2000);
+				await sleep(3000);
 				this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
 			}
+
+			if (this.markdownElementContent.includes("无法继续战斗")) {
+				const pugongAutoYaoFlag = linPluginAPI.getConfig("pugongAutoYaoFlag");
+				if (pugongAutoYaoFlag) {
+					const yaoshuiCmd = linPluginAPI.getConfig("yaoshuiCmd");
+					await sleep(1000);
+					this.sendGroupMessage(this.#pugongGroup, ` ${yaoshuiCmd}`, this.#at);
+				} else {
+					await sleep(3000);
+					this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
+				}
+			}
+
+			if (this.markdownElementContent.match(/你使用了(\d+)个圣水/)) {
+				await sleep(3000);
+				this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
+			}
+
 			if (this.markdownElementContent.includes("别着急嘛，boss又不会跑")) {
 				const regx = /别着急嘛，boss又不会跑，还有(\d+)秒冷却/;
 				const seconds = this.markdownElementContent.match(regx)?.[1];
@@ -141,43 +160,28 @@ class Yunguo extends BaseEvent {
 						this.#at
 					);
 				} else {
-					await sleep(1000);
+					await sleep(3000);
 					this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
 				}
 			}
-			if (this.markdownElementContent.includes("你距离下一次挑战boss，还有")) {
-				const regx = /你距离下一次挑战boss，还有(\d+)秒冷却/;
-				const seconds = this.markdownElementContent.match(regx)?.[1];
-				const autoChallengeFlag = linPluginAPI.getConfig("autoChallengeFlag");
 
-				pluginLog("你距离下一次挑战boss，还有==>等待时间", seconds);
+			// if (this.markdownElementContent.includes("你距离下一次挑战boss，还有")) {
+			// 	const regx = /你距离下一次挑战boss，还有(\d+)秒冷却/;
+			// 	const seconds = this.markdownElementContent.match(regx)?.[1];
+			// 	const autoChallengeFlag = linPluginAPI.getConfig("autoChallengeFlag");
 
-				if (autoChallengeFlag) {
-					const challengeCmd = linPluginAPI.getConfig("challengeCmd");
-					await sleep(Number(seconds) * 1000 + 3000);
-					this.sendGroupMessage(
-						this.#pugongGroup,
-						` ${challengeCmd}`,
-						this.#at
-					);
-				}
-			}
-			if (this.markdownElementContent.includes("无法继续战斗")) {
-				const pugongAutoYaoFlag = linPluginAPI.getConfig("pugongAutoYaoFlag");
-				if (pugongAutoYaoFlag) {
-					const yaoshuiCmd = linPluginAPI.getConfig("yaoshuiCmd");
-					await sleep(1000);
-					this.sendGroupMessage(this.#pugongGroup, ` ${yaoshuiCmd}`, this.#at);
-				} else {
-					await sleep(2000);
-					this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
-				}
-			}
-			if (this.markdownElementContent.match(/你使用了(\d+)个圣水/)) {
-				await sleep(1000);
-				this.sendGroupMessage(this.#pugongGroup, " 普攻", this.#at);
-			}
-			// if (this.markdownElementContent)
+			// 	pluginLog("你距离下一次挑战boss，还有==>等待时间", seconds);
+
+			// 	if (autoChallengeFlag) {
+			// 		const challengeCmd = linPluginAPI.getConfig("challengeCmd");
+			// 		await sleep(Number(seconds) * 1000 + 3000);
+			// 		this.sendGroupMessage(
+			// 			this.#pugongGroup,
+			// 			` ${challengeCmd}`,
+			// 			this.#at
+			// 		);
+			// 	}
+			// }
 		}
 	}
 }
