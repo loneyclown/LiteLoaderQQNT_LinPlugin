@@ -15,8 +15,17 @@
 			<setting-list data-direction="column">
 				<setting-item class="yunguo-shuaji">
 					<div class="line-item">
+						<div style="margin-top: 10px" class="row">
+							<setting-text>云国UID: </setting-text>
+							<input key="yunGuoUid" placeholder="请输入你的云国UID" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item class="yunguo-shuaji">
+					<div class="line-item">
 						<div class="row between">
-							<setting-text>刷级功能</setting-text>
+							<setting-text class="line-item-title">刷级功能</setting-text>
 							<setting-switch key="shuajiFlag"></setting-switch>
 						</div>
 						<div class="row between">
@@ -41,7 +50,7 @@
 				<setting-item class="yunguo-pugong">
 					<div class="line-item">
 						<div class="row between">
-							<setting-text>BOSS功能</setting-text>
+							<setting-text class="line-item-title">BOSS功能</setting-text>
 							<setting-switch key="bossFlag"></setting-switch>
 						</div>
 						<div class="row">
@@ -69,7 +78,28 @@
 								>设定喝药水的指令比如：/使用1 1</setting-text
 							>
 						</div>
+
 						<div style="margin-top: 10px" class="row">
+							<setting-text>自动发车</setting-text>
+							<setting-switch key="autoFaCheFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 10px" class="row">
+							<setting-text>发车指令: </setting-text>
+							<input key="faCheCmd" placeholder="请输入发车指令" />
+							<setting-text data-type="secondary"
+								>例: 发起公会组队4确定</setting-text
+							>
+						</div>
+
+						<div style="margin-top: 10px" class="row">
+							<setting-text>自动跟车</setting-text>
+							<setting-switch key="autoGenCheFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 10px" class="row">
+							<setting-text>发/跟车群: </setting-text>
+							<input key="cheGroupId" placeholder="请输入需要跟车的群号" />
+						</div>
+						<!-- <div style="margin-top: 10px" class="row">
 							<setting-text>自动挑战</setting-text>
 							<setting-switch key="autoChallengeFlag"></setting-switch>
 						</div>
@@ -79,7 +109,7 @@
 							<setting-text data-type="secondary"
 								>设定挑战BOSS的指令比如: 挑战副本16确定</setting-text
 							>
-						</div>
+						</div> -->
 					</div>
 				</setting-item>
 			</setting-list>

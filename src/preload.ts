@@ -1,5 +1,3 @@
-import config, { ConfigKey } from "./common/config";
-
 // Electron 主进程 与 渲染进程 互相交互的桥梁
 const { contextBridge, ipcRenderer } = require("electron");
 
@@ -8,8 +6,9 @@ contextBridge.exposeInMainWorld("linPluginAPI", {
 	log: (...msg) => ipcRenderer.send("LiteLoader.lite_tools.log", ...msg),
 	pluginLog: (...msg) => ipcRenderer.send("lin-plugin:log", ...msg),
 
-	getConfig: (key: ConfigKey) => ipcRenderer.sendSync("get-config", key),
-	setConfig: async (key: ConfigKey, value: any) => {
+	getConfigAll: () => ipcRenderer.sendSync("get-config:all"),
+	getConfig: (key) => ipcRenderer.sendSync("get-config", key),
+	setConfig: async (key, value: any) => {
 		return await ipcRenderer.invoke("set-config", key, value);
 	},
 

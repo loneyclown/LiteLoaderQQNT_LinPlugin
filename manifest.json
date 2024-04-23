@@ -3,8 +3,8 @@
     "type": "extension",
     "name": "LinPlugin",
     "slug": "LinPlugin",
-    "description": "LiteLoaderQQNT的插件模板",
-    "version": "1.0.0",
+    "description": "小插件",
+    "version": "1.1.0",
     "icon": null,
     "thumb": null,
     "authors": [

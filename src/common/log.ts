@@ -1,4 +1,5 @@
 import winston from "winston";
+import { SPLAT } from "triple-beam";
 
 class Log {
 	logger = null;
@@ -11,21 +12,16 @@ class Log {
 				winston.format.timestamp(), // adds a timestamp property
 				winston.format.json()
 			),
-			defaultMeta: { service: "user-service" },
+			defaultMeta: { service: "Lin-Plugin" },
 			transports: [
-				//
-				// - Write all logs with importance level of `error` or less to `error.log`
-				// - Write all logs with importance level of `info` or less to `combined.log`
-				//
-				// new winston.transports.File({ filename: "error.log", level: "error" }),
-				// new winston.transports.File({ filename: "combined.log" }),
 				new winston.transports.Console({
 					format: winston.format.combine(
-						winston.format.label({ label: "Lin-Plugin" }),
-						winston.format.timestamp(),
+						winston.format.colorize(),
 						winston.format.printf(
-							({ level, message, label, timestamp, tag }) => {
-								return `>>> ${timestamp} [${label}] ${level} [${tag}] >>>: ${message}`;
+							({ service, message, level, label, timestamp, ...rest }) => {
+								return `[${service}-${level}${
+									label ? `-${label}` : ""
+								}] >>> ${message}`;
 							}
 						)
 					),

@@ -6,7 +6,7 @@
   "scripts": {
     "db": "npm run build && npm run deploy-win",
     "build": "electron-vite build",
-    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"H:\\Program Files\\Tencent\\QQNT\\resources\\app\\LiteLoaderQQNT-main\\plugins\\Lin-Plugin\\\"\""
+    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"D:\\Program Files\\Tencent\\QQNT\\resources\\app\\LiteLoaderQQNT-main\\plugins\\Lin-Plugin\\\"\""
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "electron": "^30.0.0",
     "electron-vite": "^2.1.0",
     "lodash": "^4.17.21",
+    "triple-beam": "^1.4.1",
     "typescript": "^5.4.5",
     "vite-plugin-cp": "^4.0.8",
     "winston": "^3.13.0"

@@ -1,11 +1,12 @@
-import { ConfigKey } from "./common/config";
+import { CONFIG_KEY, ConfigType } from "./common/config";
 
 export interface ILinPluginAPI {
 	log: (...msg: any[]) => void;
 	pluginLog: (tag: string, data: any, type?: "info" | "error") => void;
 
-	getConfig: (key: ConfigKey) => any;
-	setConfig: (key: ConfigKey, value: any) => Promise<void>;
+	getConfigAll: () => ConfigType;
+	getConfig: (key: CONFIG_KEY) => any;
+	setConfig: (key: CONFIG_KEY, value: any) => Promise<void>;
 
 	setGlobalData: (data: GlobalData) => void;
 	getGlobalData: () => GlobalData;
@@ -33,7 +34,9 @@ declare global {
 		selfUin: number | null;
 		yunguo: {
 			/** 战斗次数 */
-			zhandouNum: number;
+			zhandouNum?: number;
+			/** 当前跟车指令缓存 */
+			genCheCmdTemp?: string;
 		};
 	}
 }
