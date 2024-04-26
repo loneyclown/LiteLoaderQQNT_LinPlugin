@@ -29,6 +29,8 @@ export enum CONFIG_KEY {
 	autoGenCheFlag = "autoGenCheFlag",
 	/** 车群 */
 	cheGroupId = "cheGroupId",
+	/** 纯粹的普攻 */
+	chunCuiPuGong = "chunCuiPuGong",
 }
 
 export type ConfigType = {
