@@ -262,12 +262,18 @@ class Yunguo extends BaseEvent {
 				}
 			}
 			// 加入组队cd
+			const cdRegex = /请等待\d+秒后再次点击加入/;
+			const seconds = this.markdownElementContent.match(cdRegex)?.[1];
 			if (
-				this.markdownElementContent.match(/请等待\d+秒后再次点击加入/) &&
-				this.yunGuoData.genCheCmdTemp
+				this.markdownElementContent.match(cdRegex) &&
+				this.yunGuoData.genCheCmdTemp &&
+				seconds &&
+				Number.isNaN(Number(seconds))
 			) {
-				await sleep(2000);
-				this.sendCheCmd(this.yunGuoData.genCheCmdTemp);
+				await sleep(Number(seconds) * 1000);
+				if (this.yunGuoData.genCheCmdTemp) {
+					this.sendCheCmd(this.yunGuoData.genCheCmdTemp);
+				}
 				return;
 			}
 		}

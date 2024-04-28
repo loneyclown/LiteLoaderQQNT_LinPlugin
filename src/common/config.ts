@@ -59,11 +59,12 @@ class Config {
 			this.srcConfigs[this.selfUin],
 			config
 		);
-		const ignoreKeys = [CONFIG_KEY.shuajiFlag, CONFIG_KEY.bossFlag];
-		await globalThis.LiteLoader.api.config.set(
-			"LinPlugin",
-			_.omit(this.srcConfigs, ignoreKeys)
-		);
+		// const ignoreKeys = [CONFIG_KEY.shuajiFlag, CONFIG_KEY.bossFlag];
+		// await globalThis.LiteLoader.api.config.set(
+		// 	"LinPlugin",
+		// 	_.omit(this.srcConfigs, ignoreKeys)
+		// );
+		await globalThis.LiteLoader.api.config.set("LinPlugin", this.srcConfigs);
 	}
 
 	get config() {
