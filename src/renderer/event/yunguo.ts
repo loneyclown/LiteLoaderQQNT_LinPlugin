@@ -231,6 +231,7 @@ class Yunguo extends BaseEvent {
 					if (this.config.shuajiFlag) {
 						await sleep(1000);
 						this.sendShuajiCmd("简单游历");
+						return;
 					}
 					await sleep(Number(seconds) * 1000 + 3000);
 					this.sendCheCmd(this.config.faCheCmd);
