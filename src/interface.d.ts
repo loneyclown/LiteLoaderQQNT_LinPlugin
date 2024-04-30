@@ -32,15 +32,15 @@ declare global {
 	}
 	interface GlobalData {
 		selfUin: number | null;
-		yunguo: {
-			/** 战斗次数 */
-			zhandouNum?: number;
-			/** 当前跟车指令缓存 */
-			genCheCmdTemp?: string;
-			/** 当前是否在车上(发车员) */
-			isInChe?: boolean;
-			/** 当前是否在发车cd中(发车员) */
-			isFaCheCD?: boolean;
-		};
+		// yunguo: {
+		// 	/** 战斗次数 */
+		// 	zhandouNum?: number;
+		// 	/** 当前跟车指令缓存 */
+		// 	genCheCmdTemp?: string;
+		// 	/** 当前是否在车上(发车员) */
+		// 	isInChe?: boolean;
+		// 	/** 当前是否在发车cd中(发车员) */
+		// 	isFaCheCD?: boolean;
+		// };
 	}
 }

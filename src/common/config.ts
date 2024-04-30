@@ -31,6 +31,10 @@ export enum CONFIG_KEY {
 	cheGroupId = "cheGroupId",
 	/** 纯粹的普攻 */
 	chunCuiPuGong = "chunCuiPuGong",
+	/** 云国数据缓存 */
+	yunGuoDataCache = "yunGuoDataCache",
+	/** 掉水自动续车 */
+	diaoShuiAutoFaCheFlag = "diaoShuiAutoFaCheFlag",
 }
 
 export type ConfigType = {
@@ -59,11 +63,6 @@ class Config {
 			this.srcConfigs[this.selfUin],
 			config
 		);
-		// const ignoreKeys = [CONFIG_KEY.shuajiFlag, CONFIG_KEY.bossFlag];
-		// await globalThis.LiteLoader.api.config.set(
-		// 	"LinPlugin",
-		// 	_.omit(this.srcConfigs, ignoreKeys)
-		// );
 		await globalThis.LiteLoader.api.config.set("LinPlugin", this.srcConfigs);
 	}
 

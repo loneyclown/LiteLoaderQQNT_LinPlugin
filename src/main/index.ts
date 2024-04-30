@@ -10,9 +10,9 @@ log.logger.info("[LinPlugin info] >>> 插件加载成功");
 /** 全局数据 */
 export let globalData: GlobalData = {
 	selfUin: null,
-	yunguo: {
-		zhandouNum: 0,
-	},
+	// yunguo: {
+	// 	zhandouNum: 0,
+	// },
 };
 
 // 创建窗口时触发
@@ -44,7 +44,7 @@ ipcMain.on("setGlobalData", (event, data) => {
 ipcMain.on("get-config", (event, key: CONFIG_KEY) => {
 	event.returnValue = config.getConfig(key);
 });
-ipcMain.on("get-config:all", (event, key: CONFIG_KEY) => {
+ipcMain.on("get-config:all", (event) => {
 	event.returnValue = config.config;
 });
 ipcMain.handle("set-config", async (event, key: CONFIG_KEY, value: any) => {

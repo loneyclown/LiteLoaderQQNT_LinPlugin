@@ -51,17 +51,31 @@ class Yunguo extends BaseEvent {
 		this.sendCmd(new Group(this.config.cheGroupId), msg);
 	}
 
-	private set yunGuoData(data: GlobalData["yunguo"]) {
-		linPluginAPI.setGlobalData({
-			...this.globalData,
-			yunguo: { ...this.globalData.yunguo, ...data },
-		});
+	private async setYunGuoData(data) {
+		const newData = { ...this.yunGuoData, ...data };
+		await linPluginAPI.setConfig("yunGuoDataCache" as any, newData);
 	}
 
+	// private set yunGuoData(data) {
+	// 	const newData = { ...this.yunGuoData, ...data };
+	// 	linPluginAPI.setConfig("yunGuoDataCache" as any, newData);
+	// }
+
 	private get yunGuoData() {
-		const yunGuoData = linPluginAPI.getGlobalData().yunguo;
-		return yunGuoData;
+		return linPluginAPI.getConfig("yunGuoDataCache" as any);
 	}
+
+	// private set yunGuoData(data: GlobalData["yunguo"]) {
+	// 	linPluginAPI.setGlobalData({
+	// 		...this.globalData,
+	// 		yunguo: { ...this.globalData.yunguo, ...data },
+	// 	});
+	// }
+
+	// private get yunGuoData() {
+	// 	const yunGuoData = linPluginAPI.getGlobalData().yunguo;
+	// 	return yunGuoData;
+	// }
 
 	private get markdownElementContent() {
 		const e14 = this.message.elements.filter((e) => e.elementType === 14);
@@ -168,6 +182,7 @@ class Yunguo extends BaseEvent {
 				if (!this.yunGuoData.isInChe && !this.config.chunCuiPuGong) {
 					return;
 				}
+
 				const hyFlag =
 					this.config.pugongAutoYaoFlag &&
 					this.markdownElementContent.includes("无法继续战斗") &&
@@ -178,6 +193,29 @@ class Yunguo extends BaseEvent {
 					this.sendBossCmd(this.config.yaoshuiCmd);
 					return;
 				}
+
+				if (
+					this.markdownElementContent.includes("你们击败了boss") ||
+					this.config.diaoShuiAutoFaCheFlag
+				) {
+					let arr = this.markdownElementContent.split("\r\r***\r\r");
+					arr = arr.filter((x) => x.includes("用户:"));
+					let flag = false;
+					arr.forEach((value) => {
+						if (
+							value.includes("恭喜获得时空跳跃药水") &&
+							value.includes(this.config.yunGuoUid)
+						) {
+							flag = true;
+						}
+					});
+					if (flag) {
+						await sleep(1000);
+						this.sendBossCmd(this.config.faCheCmd);
+						return;
+					}
+				}
+
 				await sleep(3000);
 				this.sendBossCmd("普攻");
 				return;
@@ -187,8 +225,9 @@ class Yunguo extends BaseEvent {
 				const cdRegex = /别着急嘛，boss又不会跑，还有(\d+)秒冷却/;
 				const seconds = this.markdownElementContent.match(cdRegex)?.[1];
 				if (seconds && Number.isNaN(Number(seconds)) && Number(seconds) > 10) {
-					this.yunGuoData.isFaCheCD = true;
-					this.yunGuoData.isInChe = false;
+					this.setYunGuoData({ isFaCheCD: true, isInChe: false });
+					// this.yunGuoData.isFaCheCD = true;
+					// this.yunGuoData.isInChe = false;
 					if (this.config.shuajiFlag) {
 						await sleep(1000);
 						this.sendShuajiCmd("简单游历");
@@ -211,16 +250,18 @@ class Yunguo extends BaseEvent {
 			if (this.config.autoGenCheFlag) {
 				if (!this.isSelfInTheChe) {
 					const genCheCmdTemp = `${this.genCheBtn.data}确定`;
-					this.yunGuoData = {
-						genCheCmdTemp,
-					};
+					this.setYunGuoData({ genCheCmdTemp });
+					// this.yunGuoData = {
+					// 	genCheCmdTemp,
+					// };
 					await sleep(2000);
 					this.sendCheCmd(genCheCmdTemp);
 					return;
 				}
 				const genCheCmdTemp = this.yunGuoData.genCheCmdTemp;
 				if (genCheCmdTemp) {
-					this.yunGuoData = { genCheCmdTemp: "" };
+					// this.yunGuoData = { genCheCmdTemp: "" };
+					this.setYunGuoData({ genCheCmdTemp: "" });
 					return;
 				}
 			}
@@ -240,8 +281,9 @@ class Yunguo extends BaseEvent {
 					}
 					// 开始组队挑战
 					if (this.markdownElementContent.includes("开始了组队挑战")) {
-						this.yunGuoData.isInChe = true;
-						this.yunGuoData.isFaCheCD = false;
+						this.setYunGuoData({ isInChe: true, isFaCheCD: false });
+						// this.yunGuoData.isInChe = true;
+						// this.yunGuoData.isFaCheCD = false;
 						await sleep(3000);
 						this.sendBossCmd("普攻");
 						return;

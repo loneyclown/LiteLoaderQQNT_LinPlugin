@@ -3,3 +3,4 @@ dist
 pnpm-lock.yaml
 src/renderer/lib/euphony
 dist.zip
+dist*.zip
