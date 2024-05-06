@@ -1,5 +1,6 @@
 import { sleep } from "../common/utils";
 import Message, { NtQQMsg } from "./event/message";
+import WuxiaEvent from "./event/wuxia";
 import Yunguo from "./event/yunguo";
 import initYunguoSettingView from "./view/yunguo";
 
@@ -52,15 +53,13 @@ const init = async () => {
 		({ msgList }: { msgList: NtQQMsg[] }) => {
 			try {
 				const message = new Message(msgList);
-				// pluginLog("NtQQMessage", message.message);
 				const yunguo = new Yunguo(message);
 				yunguo.onRecvActiveMsg();
+
+				const wuxiaEvent = new WuxiaEvent(message);
+				wuxiaEvent.onRecvActiveMsg();
 			} catch (error) {
-				window.linPluginAPI.pluginLog(
-					"onRecvActiveMsg监听错误",
-					error,
-					"error"
-				);
+				pluginLog("onRecvActiveMsg监听错误", error, "error");
 			}
 		}
 	);
