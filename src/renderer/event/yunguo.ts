@@ -9,7 +9,6 @@ const pluginLog = linPluginAPI.pluginLog;
 
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
-	// private groups: Map<string, Group>;
 	private globalData: GlobalData;
 
 	constructor(message: Message) {
@@ -56,26 +55,9 @@ class Yunguo extends BaseEvent {
 		await linPluginAPI.setConfig("yunGuoDataCache" as any, newData);
 	}
 
-	// private set yunGuoData(data) {
-	// 	const newData = { ...this.yunGuoData, ...data };
-	// 	linPluginAPI.setConfig("yunGuoDataCache" as any, newData);
-	// }
-
 	private get yunGuoData() {
 		return linPluginAPI.getConfig("yunGuoDataCache" as any);
 	}
-
-	// private set yunGuoData(data: GlobalData["yunguo"]) {
-	// 	linPluginAPI.setGlobalData({
-	// 		...this.globalData,
-	// 		yunguo: { ...this.globalData.yunguo, ...data },
-	// 	});
-	// }
-
-	// private get yunGuoData() {
-	// 	const yunGuoData = linPluginAPI.getGlobalData().yunguo;
-	// 	return yunGuoData;
-	// }
 
 	private get markdownElementContent() {
 		const e14 = this.message.elements.filter((e) => e.elementType === 14);
@@ -226,8 +208,6 @@ class Yunguo extends BaseEvent {
 				const seconds = this.markdownElementContent.match(cdRegex)?.[1];
 				if (seconds && Number.isNaN(Number(seconds)) && Number(seconds) > 10) {
 					this.setYunGuoData({ isFaCheCD: true, isInChe: false });
-					// this.yunGuoData.isFaCheCD = true;
-					// this.yunGuoData.isInChe = false;
 					if (this.config.shuajiFlag) {
 						await sleep(1000);
 						this.sendShuajiCmd("简单游历");
@@ -249,6 +229,17 @@ class Yunguo extends BaseEvent {
 		if (this.genCheBtn) {
 			// 跟车员
 			if (this.config.autoGenCheFlag) {
+				if (this.markdownElementContent.includes("加入了组队")) {
+					const [str1, str2] = this.markdownElementContent.split("加入了组队");
+					const uid = str1.match(/用户:(\d+)\r/)[1];
+					if (uid && uid === this.config.yunGuoUid) {
+						const str3 = str2.split("当前人数")[0];
+						const currHeaderUid = str3.match(/用户:(\d+)\r/)[1];
+						if (currHeaderUid) {
+							this.setYunGuoData({ currHeaderUid });
+						}
+					}
+				}
 				if (!this.isSelfInTheChe) {
 					const genCheCmdTemp = `${this.genCheBtn.data}确定`;
 					this.setYunGuoData({ genCheCmdTemp });
@@ -302,6 +293,19 @@ class Yunguo extends BaseEvent {
 					await linPluginAPI.setConfig(CONFIG_KEY.autoFaCheFlag, false);
 					await linPluginAPI.setConfig(CONFIG_KEY.autoGenCheFlag, false);
 					return;
+				}
+			}
+			// 卡队
+			if (this.markdownElementContent.includes("你已经加入了别人的组队")) {
+				await sleep(1000);
+				this.sendCheCmd("放弃挑战");
+				return;
+			}
+			if (this.markdownElementContent.includes("你放弃了boss挑战")) {
+				const genCheCmdTemp = this.yunGuoData.genCheCmdTemp;
+				if (genCheCmdTemp) {
+					await sleep(1000);
+					this.sendCheCmd(genCheCmdTemp);
 				}
 			}
 			// 加入组队cd
