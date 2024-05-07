@@ -32,6 +32,8 @@ declare global {
 	}
 	interface GlobalData {
 		selfUin: number | null;
+		selfUid: string | null;
+		selfInfo: object | null;
 		// yunguo: {
 		// 	/** 战斗次数 */
 		// 	zhandouNum?: number;

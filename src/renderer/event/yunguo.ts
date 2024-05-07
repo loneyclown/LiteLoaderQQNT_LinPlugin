@@ -32,6 +32,10 @@ class Yunguo extends BaseEvent {
 				this.onChe();
 				return;
 			}
+			if (this.message.peerUid === this.config.cxhcGroupId) {
+				this.onCxhc();
+				return;
+			}
 		}
 	}
 
@@ -89,10 +93,20 @@ class Yunguo extends BaseEvent {
 	}
 
 	/** 草神bot 是否艾特的是当前用户 */
-	isAtSelf() {
+	private isAtSelf() {
 		return this.markdownElementContent.includes(
 			`at_tinyid=${this.globalData.selfUin}`
 		);
+	}
+
+	private get atType() {
+		return this.message.qqMsg.atType;
+	}
+
+	private get textElementAtNtUid() {
+		const arr = this.message.elements.filter((e) => e.elementType === 1);
+		const find = arr.find((e) => e.textElement.atNtUid);
+		return find?.textElement.atNtUid;
 	}
 
 	async onShuaji() {
@@ -207,7 +221,7 @@ class Yunguo extends BaseEvent {
 				const cdRegex = /别着急嘛，boss又不会跑，还有(\d+)秒冷却/;
 				const seconds = this.markdownElementContent.match(cdRegex)?.[1];
 				if (seconds && Number.isNaN(Number(seconds)) && Number(seconds) > 10) {
-					this.setYunGuoData({ isFaCheCD: true, isInChe: false });
+					await this.setYunGuoData({ isFaCheCD: true, isInChe: false });
 					if (this.config.shuajiFlag) {
 						await sleep(1000);
 						this.sendShuajiCmd("简单游历");
@@ -223,6 +237,7 @@ class Yunguo extends BaseEvent {
 
 	async onChe() {
 		pluginLog("测试云国车", this.message.qqMsg);
+		console.log("this.message.qqMsg", this.message.qqMsg);
 
 		// 此处处理不需要艾特自己的消息
 		// 发现组队信息
@@ -236,13 +251,13 @@ class Yunguo extends BaseEvent {
 						const str3 = str2.split("当前人数")[0];
 						const currHeaderUid = str3.match(/用户:(\d+)\r/)[1];
 						if (currHeaderUid) {
-							this.setYunGuoData({ currHeaderUid });
+							await this.setYunGuoData({ currHeaderUid });
 						}
 					}
 				}
 				if (!this.isSelfInTheChe) {
 					const genCheCmdTemp = `${this.genCheBtn.data}确定`;
-					this.setYunGuoData({ genCheCmdTemp });
+					await this.setYunGuoData({ genCheCmdTemp });
 					// this.yunGuoData = {
 					// 	genCheCmdTemp,
 					// };
@@ -253,7 +268,7 @@ class Yunguo extends BaseEvent {
 				const genCheCmdTemp = this.yunGuoData.genCheCmdTemp;
 				if (genCheCmdTemp) {
 					// this.yunGuoData = { genCheCmdTemp: "" };
-					this.setYunGuoData({ genCheCmdTemp: "" });
+					await this.setYunGuoData({ genCheCmdTemp: "" });
 					return;
 				}
 			}
@@ -273,7 +288,7 @@ class Yunguo extends BaseEvent {
 					}
 					// 开始组队挑战
 					if (this.markdownElementContent.includes("开始了组队挑战")) {
-						this.setYunGuoData({ isInChe: true, isFaCheCD: false });
+						await this.setYunGuoData({ isInChe: true, isFaCheCD: false });
 						// this.yunGuoData.isInChe = true;
 						// this.yunGuoData.isFaCheCD = false;
 						await sleep(3000);
@@ -323,6 +338,36 @@ class Yunguo extends BaseEvent {
 				}
 				return;
 			}
+		}
+	}
+
+	/** 持续合成 */
+	async onCxhc() {
+		const hcBtn = this.message.findButton("确定合成");
+		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+		if (msgUid && msgUid === this.config.yunGuoUid) {
+			if (hcBtn) {
+				await sleep(1000);
+				await this.setYunGuoData({ hcCmdTemp: hcBtn.data });
+				this.sendCmd(new Group(this.config.cxhcGroupId), hcBtn.data);
+				return;
+			}
+			if (this.markdownElementContent.includes("合成成功")) {
+				await this.setYunGuoData({ hcCmdTemp: "" });
+				return;
+			}
+		}
+		if (
+			this.markdownElementContent.includes("合成失败") &&
+			this.yunGuoData.hcCmdTemp &&
+			this.atType === 6 &&
+			this.textElementAtNtUid === this.globalData.selfUid
+		) {
+			await sleep(1000);
+			this.sendCmd(
+				new Group(this.config.cxhcGroupId),
+				this.yunGuoData.hcCmdTemp
+			);
 		}
 	}
 }

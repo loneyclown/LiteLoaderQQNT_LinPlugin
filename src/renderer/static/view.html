@@ -3,7 +3,7 @@
 		<setting-panel>
 			<setting-list data-direction="column" class="new">
 				<setting-item>
-					<setting-text>当前LinPlugin的版本是 <span>1.1.4</span></setting-text>
+					<setting-text>当前LinPlugin的版本是 <span>1.1.5</span></setting-text>
 					<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
 				</setting-item>
 			</setting-list>
@@ -47,75 +47,103 @@
 					</div>
 				</setting-item>
 
-				<setting-item class="yunguo-pugong">
+				<setting-item class="yunguo-boss">
 					<div class="line-item">
-						<div class="row between">
-							<setting-text class="line-item-title">BOSS功能</setting-text>
-							<setting-switch key="bossFlag"></setting-switch>
-						</div>
-						<div class="row">
-							<setting-text data-type="secondary"
-								>实现自动普攻和吃药，可以设置定时挑战某个BOSS。</setting-text
-							>
-						</div>
-						<div class="row">
-							<setting-text data-type="secondary"
-								>设置好普攻群号和相关配置，然后去设置好的群里普攻一下。</setting-text
-							>
-						</div>
-						<div style="margin-top: 10px" class="row">
-							<setting-text>普攻群: </setting-text>
-							<input key="puGongGroupId" placeholder="请输入需要普攻的群号" />
-							<setting-text>纯粹普攻: </setting-text>
-							<setting-switch key="chunCuiPuGong"></setting-switch>
-						</div>
-						<div style="margin-top: 10px" class="row">
-							<setting-text>自动吃药</setting-text>
-							<setting-switch key="pugongAutoYaoFlag"></setting-switch>
-						</div>
-						<div style="margin-top: 6px" class="row">
-							<setting-text>药水指令: </setting-text>
-							<input key="yaoshuiCmd" placeholder="请输入药水指令" />
-							<setting-text data-type="secondary"
-								>设定喝药水的指令比如：/使用1 1</setting-text
-							>
+						<div>
+							<div class="row between">
+								<setting-text class="line-item-title">BOSS功能</setting-text>
+								<setting-switch key="bossFlag"></setting-switch>
+							</div>
+							<div class="row">
+								<setting-text data-type="secondary"
+									>实现自动普攻和吃药，可以设置定时挑战某个BOSS。</setting-text
+								>
+							</div>
+							<div class="row">
+								<setting-text data-type="secondary"
+									>设置好普攻群号和相关配置，然后去设置好的群里普攻一下。</setting-text
+								>
+							</div>
 						</div>
 
-						<div style="margin-top: 10px" class="row">
-							<setting-text>自动发车</setting-text>
-							<setting-switch key="autoFaCheFlag"></setting-switch>
-							<setting-text style="margin-left: 10px"
-								>掉水自动续车</setting-text
-							>
-							<setting-switch key="diaoShuiAutoFaCheFlag"></setting-switch>
-						</div>
-						<div style="margin-top: 10px" class="row">
-							<setting-text>发车指令: </setting-text>
-							<input key="faCheCmd" placeholder="请输入发车指令" />
-							<setting-text data-type="secondary"
-								>例: 发起公会组队4确定</setting-text
-							>
+						<div>
+							<div style="margin-top: 10px" class="row">
+								<setting-text>普攻群: </setting-text>
+								<input key="puGongGroupId" placeholder="请输入需要普攻的群号" />
+								<setting-text>纯粹普攻: </setting-text>
+								<setting-switch key="chunCuiPuGong"></setting-switch>
+							</div>
 						</div>
 
-						<div style="margin-top: 10px" class="row">
-							<setting-text>自动跟车</setting-text>
-							<setting-switch key="autoGenCheFlag"></setting-switch>
+						<div>
+							<div style="margin-top: 10px" class="row">
+								<setting-text>自动吃药</setting-text>
+								<setting-switch key="pugongAutoYaoFlag"></setting-switch>
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>药水指令: </setting-text>
+								<input key="yaoshuiCmd" placeholder="请输入药水指令" />
+								<setting-text data-type="secondary"
+									>设定喝药水的指令比如：/使用1 1</setting-text
+								>
+							</div>
 						</div>
-						<div style="margin-top: 10px" class="row">
-							<setting-text>发/跟车群: </setting-text>
-							<input key="cheGroupId" placeholder="请输入需要跟车的群号" />
+
+						<div>
+							<div style="margin-top: 10px" class="row">
+								<setting-text>自动发车</setting-text>
+								<setting-switch key="autoFaCheFlag"></setting-switch>
+								<setting-text style="margin-left: 10px"
+									>掉水自动续车</setting-text
+								>
+								<setting-switch key="diaoShuiAutoFaCheFlag"></setting-switch>
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>发车指令: </setting-text>
+								<input key="faCheCmd" placeholder="请输入发车指令" />
+								<setting-text data-type="secondary"
+									>例: 发起公会组队4确定</setting-text
+								>
+							</div>
 						</div>
-						<!-- <div style="margin-top: 10px" class="row">
-							<setting-text>自动挑战</setting-text>
-							<setting-switch key="autoChallengeFlag"></setting-switch>
+
+						<div>
+							<div style="margin-top: 10px" class="row">
+								<setting-text>自动跟车</setting-text>
+								<setting-switch key="autoGenCheFlag"></setting-switch>
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>发/跟车群: </setting-text>
+								<input key="cheGroupId" placeholder="请输入需要跟车的群号" />
+							</div>
 						</div>
-						<div style="margin-top: 6px" class="row">
-							<setting-text>挑战指令: </setting-text>
-							<input key="challengeCmd" placeholder="请输入挑战指令" />
-							<setting-text data-type="secondary"
-								>设定挑战BOSS的指令比如: 挑战副本16确定</setting-text
-							>
-						</div> -->
+					</div>
+				</setting-item>
+
+				<setting-item class="yunguo-other">
+					<div class="line-item">
+						<div>
+							<div class="row between">
+								<setting-text class="line-item-title">其他功能</setting-text>
+							</div>
+							<div class="row">
+								<setting-text data-type="secondary"
+									>持续合成因为没有at信息，为了避免和其他人冲突请单独设置群号。</setting-text
+								>
+							</div>
+						</div>
+						<div>
+							<div style="margin-top: 10px" class="row">
+								<setting-text>持续合成</setting-text>
+								<setting-switch key="cxhcFlag"></setting-switch>
+								<setting-text style="margin-left: 10px">合成群</setting-text>
+								<input key="cxhcGroupId" placeholder="请输入需要合成的群号" />
+							</div>
+							<!-- <div style="margin-top: 4px" class="row">
+								<setting-text>合成指令</setting-text>
+								<input key="hcCmd" placeholder="如：确定合成1:11" />
+							</div> -->
+						</div>
 					</div>
 				</setting-item>
 			</setting-list>

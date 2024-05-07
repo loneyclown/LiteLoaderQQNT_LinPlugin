@@ -35,6 +35,10 @@ export enum CONFIG_KEY {
 	yunGuoDataCache = "yunGuoDataCache",
 	/** 掉水自动续车 */
 	diaoShuiAutoFaCheFlag = "diaoShuiAutoFaCheFlag",
+	/** 持续合成群号 */
+	cxhcGroupId = "cxhcGroupId",
+	// /** 合成指令 */
+	// hcCmd = "hcCmd",
 }
 
 export type ConfigType = {

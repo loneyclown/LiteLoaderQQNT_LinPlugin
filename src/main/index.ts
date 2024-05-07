@@ -1,18 +1,15 @@
-import { BrowserWindow, ipcMain, session, webContents } from "electron";
+import { BrowserWindow, ipcMain } from "electron";
 import _ from "lodash";
 import config, { CONFIG_KEY } from "../common/config";
 import log from "../common/log";
 
-// console.log("[LinPlugin info] >>> 插件加载成功");
 log.logger.info("[LinPlugin info] >>> 插件加载成功");
 
-// const linUidMap = new Map();
 /** 全局数据 */
 export let globalData: GlobalData = {
 	selfUin: null,
-	// yunguo: {
-	// 	zhandouNum: 0,
-	// },
+	selfUid: null,
+	selfInfo: null,
 };
 
 // 创建窗口时触发
@@ -24,12 +21,19 @@ ipcMain.on("IPC_UP_2", (event, ...args) => {
 	const { eventName } = evInfo;
 	if (eventName === "ns-LoggerApi-2") {
 		const regex =
-			/^\[\d+\]\[Render\]\[MainWindow\]\[AuthStore\] initStore addExtraParameter: account_id (\d+)$/;
+			/^\[\d+\]\[Render\]\[MainWindow\]\[AuthStore\] initStore ({.*})/;
 		const match = srcContent.match(regex);
-		const selfUin = match?.[1];
-		if (selfUin) {
-			globalData.selfUin = selfUin;
-			config.init(selfUin);
+		if (match) {
+			try {
+				const json = JSON.parse(match?.[1]);
+				globalData.selfInfo = json;
+				globalData.selfUin = json?.uin;
+				globalData.selfUid = json?.uid;
+				console.log(">>> 账户信息获取成功 >>>", json);
+				config.init(globalData.selfUin);
+			} catch (error) {
+				log.error("账户信息获取失败", error);
+			}
 		}
 	}
 });
