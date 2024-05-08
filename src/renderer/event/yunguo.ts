@@ -93,9 +93,11 @@ class Yunguo extends BaseEvent {
 	}
 
 	/** 草神bot 是否艾特的是当前用户 */
-	private isAtSelf() {
-		return this.markdownElementContent.includes(
-			`at_tinyid=${this.globalData.selfUin}`
+	private get isAtSelf() {
+		return (
+			this.markdownElementContent.includes(
+				`at_tinyid=${this.globalData.selfUin}`
+			) || this.textElementAtNtUid === this.globalData.selfUid
 		);
 	}
 
@@ -237,7 +239,13 @@ class Yunguo extends BaseEvent {
 
 	async onChe() {
 		pluginLog("测试云国车", this.message.qqMsg);
-		console.log("this.message.qqMsg", this.message.qqMsg);
+		console.log("测试云国车", {
+			qqMsg: this.message.qqMsg,
+			globalData: this.globalData,
+			isAtSelf: this.isAtSelf,
+			atType: this.atType,
+			textElementAtNtUid: this.textElementAtNtUid,
+		});
 
 		// 此处处理不需要艾特自己的消息
 		// 发现组队信息
