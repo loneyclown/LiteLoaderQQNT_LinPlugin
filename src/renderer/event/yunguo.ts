@@ -24,17 +24,17 @@ class Yunguo extends BaseEvent {
 				this.onShuaji();
 				return;
 			}
-			if (this.message.peerUid === this.config.puGongGroupId) {
-				this.onBoss();
-				return;
-			}
-			if (this.message.peerUid === this.config.cheGroupId) {
-				this.onChe();
-				return;
-			}
 			if (this.message.peerUid === this.config.cxhcGroupId) {
 				this.onCxhc();
 				return;
+			}
+			if (this.message.peerUid === this.config.puGongGroupId) {
+				this.onBoss();
+				// return;
+			}
+			if (this.message.peerUid === this.config.cheGroupId) {
+				this.onChe();
+				// return;
 			}
 		}
 	}
@@ -168,6 +168,13 @@ class Yunguo extends BaseEvent {
 	}
 
 	async onBoss() {
+		console.log("测试云国boss", {
+			qqMsg: this.message.qqMsg,
+			globalData: this.globalData,
+			isAtSelf: this.isAtSelf,
+			atType: this.atType,
+			textElementAtNtUid: this.textElementAtNtUid,
+		});
 		if (this.config.bossFlag && this.isAtSelf) {
 			pluginLog("测试云国boss", this.message.qqMsg);
 			const regex = /boss血量：(\d+)\r/;
