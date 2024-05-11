@@ -37,8 +37,8 @@ export enum CONFIG_KEY {
 	diaoShuiAutoFaCheFlag = "diaoShuiAutoFaCheFlag",
 	/** 持续合成群号 */
 	cxhcGroupId = "cxhcGroupId",
-	// /** 合成指令 */
-	// hcCmd = "hcCmd",
+	/** 续车指令 */
+	xuCheCmd = "xuCheCmd",
 }
 
 export type ConfigType = {

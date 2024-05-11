@@ -3,9 +3,7 @@
 		<setting-panel>
 			<setting-list data-direction="column" class="new">
 				<setting-item>
-					<setting-text
-						>当前LinPlugin的版本是 <span>1.1.5.1</span></setting-text
-					>
+					<setting-text>当前LinPlugin的版本是 <span>1.1.6</span></setting-text>
 					<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
 				</setting-item>
 			</setting-list>
@@ -17,7 +15,7 @@
 			<setting-list data-direction="column">
 				<setting-item class="yunguo-shuaji">
 					<div class="line-item">
-						<div style="margin-top: 10px" class="row">
+						<div style="margin-top: 14px" class="row">
 							<setting-text>云国UID: </setting-text>
 							<input key="yunGuoUid" placeholder="请输入你的云国UID" />
 						</div>
@@ -40,7 +38,7 @@
 								>设置好需要刷级的群号，然后打开开关，在设定好的群内手动发送一次简单游历即可。</setting-text
 							>
 						</div>
-						<div style="margin-top: 10px" class="row">
+						<div style="margin-top: 14px" class="row">
 							<setting-text>刷级群: </setting-text>
 							<input key="shuajiGroupId" placeholder="请输入需要刷级的群号" />
 							<setting-text style="margin-right: 10px">自动升级: </setting-text>
@@ -69,7 +67,7 @@
 						</div>
 
 						<div>
-							<div style="margin-top: 10px" class="row">
+							<div style="margin-top: 14px" class="row">
 								<setting-text>普攻群: </setting-text>
 								<input key="puGongGroupId" placeholder="请输入需要普攻的群号" />
 								<setting-text>纯粹普攻: </setting-text>
@@ -78,7 +76,7 @@
 						</div>
 
 						<div>
-							<div style="margin-top: 10px" class="row">
+							<div style="margin-top: 14px" class="row">
 								<setting-text>自动吃药</setting-text>
 								<setting-switch key="pugongAutoYaoFlag"></setting-switch>
 							</div>
@@ -92,13 +90,9 @@
 						</div>
 
 						<div>
-							<div style="margin-top: 10px" class="row">
+							<div style="margin-top: 14px" class="row">
 								<setting-text>自动发车</setting-text>
 								<setting-switch key="autoFaCheFlag"></setting-switch>
-								<setting-text style="margin-left: 10px"
-									>掉水自动续车</setting-text
-								>
-								<setting-switch key="diaoShuiAutoFaCheFlag"></setting-switch>
 							</div>
 							<div style="margin-top: 4px" class="row">
 								<setting-text>发车指令: </setting-text>
@@ -107,10 +101,19 @@
 									>例: 发起公会组队4确定</setting-text
 								>
 							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>掉水自动续车</setting-text>
+								<setting-switch key="diaoShuiAutoFaCheFlag"></setting-switch>
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>续车指令: </setting-text>
+								<input key="xuCheCmd" placeholder="请输入续车指令" />
+								<setting-text data-type="secondary">例: 使用4</setting-text>
+							</div>
 						</div>
 
 						<div>
-							<div style="margin-top: 10px" class="row">
+							<div style="margin-top: 14px" class="row">
 								<setting-text>自动跟车</setting-text>
 								<setting-switch key="autoGenCheFlag"></setting-switch>
 							</div>
@@ -135,7 +138,7 @@
 							</div>
 						</div>
 						<div>
-							<div style="margin-top: 10px" class="row">
+							<div style="margin-top: 14px" class="row">
 								<setting-text>持续合成</setting-text>
 								<setting-switch key="cxhcFlag"></setting-switch>
 								<setting-text style="margin-left: 10px">合成群</setting-text>

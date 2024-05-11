@@ -6,7 +6,7 @@
   "scripts": {
     "db": "npm run build && npm run deploy-win",
     "build": "electron-vite build",
-    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"H:\\Program Files\\Tencent\\QQNT\\resources\\app\\LiteLoaderQQNT-main\\plugins\\Lin-Plugin\\\"\""
+    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"D:\\Program Files\\Tencent\\QQNT\\resources\\app\\LiteLoaderQQNT-main\\plugins\\Lin-Plugin\\\"\""
   },
   "author": "",
   "license": "ISC",
