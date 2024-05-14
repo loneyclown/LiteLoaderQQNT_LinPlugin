@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from "electron";
 import _ from "lodash";
-import config, { CONFIG_KEY } from "../common/config";
+import config, { ConfigType } from "../common/config";
 import log from "../common/log";
 
 log.logger.info("[LinPlugin info] >>> 插件加载成功");
@@ -45,15 +45,18 @@ ipcMain.on("setGlobalData", (event, data) => {
 	globalData = data;
 });
 
-ipcMain.on("get-config", (event, key: CONFIG_KEY) => {
+ipcMain.on("get-config", (event, key: keyof ConfigType) => {
 	event.returnValue = config.getConfig(key);
 });
 ipcMain.on("get-config:all", (event) => {
 	event.returnValue = config.config;
 });
-ipcMain.handle("set-config", async (event, key: CONFIG_KEY, value: any) => {
-	await config.setConfig(key, value);
-});
+ipcMain.handle(
+	"set-config",
+	async (event, key: keyof ConfigType, value: any) => {
+		await config.setConfig(key, value);
+	}
+);
 
 ipcMain.on("lin-plugin:log", (event, tag, data, type = "info") => {
 	try {

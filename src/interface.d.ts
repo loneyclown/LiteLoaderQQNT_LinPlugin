@@ -1,12 +1,12 @@
-import { CONFIG_KEY, ConfigType } from "./common/config";
+import { ConfigType } from "./common/config";
 
 export interface ILinPluginAPI {
 	log: (...msg: any[]) => void;
 	pluginLog: (tag: string, data: any, type?: "info" | "error") => void;
 
 	getConfigAll: () => ConfigType;
-	getConfig: (key: CONFIG_KEY) => any;
-	setConfig: (key: CONFIG_KEY, value: any) => Promise<void>;
+	getConfig: (key: keyof ConfigType) => any;
+	setConfig: (key: keyof ConfigType, value: any) => Promise<void>;
 
 	setGlobalData: (data: GlobalData) => void;
 	getGlobalData: () => GlobalData;

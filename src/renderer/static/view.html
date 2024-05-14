@@ -3,7 +3,7 @@
 		<setting-panel>
 			<setting-list data-direction="column" class="new">
 				<setting-item>
-					<setting-text>当前LinPlugin的版本是 <span>1.1.6</span></setting-text>
+					<setting-text>当前LinPlugin的版本是 <span>1.2</span></setting-text>
 					<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
 				</setting-item>
 			</setting-list>
@@ -72,6 +72,15 @@
 								<input key="puGongGroupId" placeholder="请输入需要普攻的群号" />
 								<setting-text>纯粹普攻: </setting-text>
 								<setting-switch key="chunCuiPuGong"></setting-switch>
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>使用技能: </setting-text>
+								<setting-switch key="fubenSkillFlag"></setting-switch>
+								<input key="fubenSkillId" placeholder="副本技能ID" />
+								<input
+									key="fubenPointsRequiredForSkills"
+									placeholder="副本技能所需点数"
+								/>
 							</div>
 						</div>
 

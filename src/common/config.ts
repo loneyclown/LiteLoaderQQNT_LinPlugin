@@ -1,49 +1,56 @@
 import _ from "lodash";
 
-export enum CONFIG_KEY {
+/**
+ * 配置项类型
+ */
+export interface ConfigType {
 	/** 你的云国uid */
-	yunGuoUid = "yunGuoUid",
+	yunGuoUid: any;
 	/** 是否自动刷级 */
-	shuajiFlag = "shuajiFlag",
+	shuajiFlag: any;
 	/** 是否自动boss */
-	bossFlag = "bossFlag",
+	bossFlag: any;
 	/** 刷级群号 */
-	shuajiGroupId = "shuajiGroupId",
+	shuajiGroupId: any;
 	/** 普攻群号 */
-	puGongGroupId = "puGongGroupId",
+	puGongGroupId: any;
 	/** 刷级是否自动升级 */
-	shuajiAutoUpgradeFlag = "shuajiAutoUpgradeFlag",
+	shuajiAutoUpgradeFlag: any;
 	/** 普攻是否自动吃药 */
-	pugongAutoYaoFlag = "pugongAutoYaoFlag",
+	pugongAutoYaoFlag: any;
 	/** 药水命令 */
-	yaoshuiCmd = "yaoshuiCmd",
+	yaoshuiCmd: any;
 	/** 是否定时自动发起挑战 */
-	autoChallengeFlag = "autoChallengeFlag",
+	autoChallengeFlag: any;
 	/** 挑战命令 */
-	challengeCmd = "challengeCmd",
+	challengeCmd: any;
 	/** 是否自动发车 */
-	autoFaCheFlag = "autoFaCheFlag",
+	autoFaCheFlag: any;
 	/** 发车命令 */
-	faCheCmd = "faCheCmd",
-	/**是否自动跟车 */
-	autoGenCheFlag = "autoGenCheFlag",
+	faCheCmd: any;
+	/** 是否自动跟车 */
+	autoGenCheFlag: any;
 	/** 车群 */
-	cheGroupId = "cheGroupId",
+	cheGroupId: any;
 	/** 纯粹的普攻 */
-	chunCuiPuGong = "chunCuiPuGong",
+	chunCuiPuGong: any;
 	/** 云国数据缓存 */
-	yunGuoDataCache = "yunGuoDataCache",
+	yunGuoDataCache: any;
 	/** 掉水自动续车 */
-	diaoShuiAutoFaCheFlag = "diaoShuiAutoFaCheFlag",
+	diaoShuiAutoFaCheFlag: any;
 	/** 持续合成群号 */
-	cxhcGroupId = "cxhcGroupId",
+	cxhcGroupId: any;
 	/** 续车指令 */
-	xuCheCmd = "xuCheCmd",
+	xuCheCmd: any;
+	/** 是否持续合成 */
+	cxhcFlag: boolean;
+	/** 副本是否使用技能 */
+	fubenSkillFlag: boolean;
+	/** 副本技能ID */
+	fubenSkillId: any;
+	/** 副本技能所需点数 */
+	fubenPointsRequiredForSkills: any;
 }
-
-export type ConfigType = {
-	[key in CONFIG_KEY]: any;
-};
 
 class Config {
 	private srcConfigs: { [key: string]: ConfigType } = {};
@@ -74,11 +81,11 @@ class Config {
 		return this._config;
 	}
 
-	getConfig(key: CONFIG_KEY) {
+	getConfig(key: keyof ConfigType) {
 		return this._config[key] || null;
 	}
 
-	async setConfig(key: CONFIG_KEY, value: any) {
+	async setConfig(key: keyof ConfigType, value: any) {
 		console.log("[LinPlugin info] >>> 设置配置: ", { key, value });
 		this._config[key] = value;
 		await this.setBaseConfig({ [key]: value });
