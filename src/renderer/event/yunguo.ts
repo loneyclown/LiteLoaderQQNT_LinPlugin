@@ -273,9 +273,23 @@ class Yunguo extends BaseEvent {
 			const boss = this.groups.get("boss");
 			const regex = /boss血量：(\d+)\r/;
 			const bossHp = this.markdownElementContent.match(regex)?.[1];
+			const tuan =
+				this.markdownElementContent.includes("团本") &&
+				this.markdownElementContent.includes("血量");
+
+			// const tuan_s = this.getNumberValue(
+			// 	this.markdownElementContent.match(
+			// 		/别着急嘛，tuan又不会跑，还有(\d+)秒冷却/
+			// 	)[1]
+			// );
+			// if (tuan_s > 0) {
+			// 	await sleep(tuan_s * 1000);
+			// 	boss.sendCmd(tuan ? "团本普攻" : "普攻");
+			// 	return;
+			// }
 
 			// 消息包含boss血量或者使用圣水
-			if (bossHp || isSs) {
+			if (bossHp || isSs || tuan) {
 				const hyFlag =
 					this.config.pugongAutoYaoFlag &&
 					this.markdownElementContent.includes("无法继续战斗") &&
@@ -293,7 +307,8 @@ class Yunguo extends BaseEvent {
 
 				if (isSs) {
 					await sleep(1000);
-					boss.sendCmd("普攻");
+					boss.sendCmd(tuan ? "团本普攻" : "普攻");
+					return;
 				}
 
 				if (this.config.fubenSkillFlag) {
@@ -305,13 +320,15 @@ class Yunguo extends BaseEvent {
 						skillPoints >= (this.config.fubenPointsRequiredForSkills || 999999)
 					) {
 						await sleep(3000);
-						boss.sendCmd(`副本技能${this.config.fubenSkillId}`);
+						boss.sendCmd(
+							`${tuan ? "团本技能" : "副本技能"}${this.config.fubenSkillId}`
+						);
 						return;
 					}
 				}
 
 				await sleep(3000);
-				boss.sendCmd("普攻");
+				boss.sendCmd(tuan ? "团本普攻" : "普攻");
 				return;
 			}
 		}
