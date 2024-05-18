@@ -426,21 +426,23 @@ class Yunguo extends BaseEvent {
 
 	/**分解 */
 	async onFenjie() {
-		const fj = this.groups.get("fj");
-		const fenjie = this.markdownElementContent.includes("分解了圣物");
-		const swmeile = this.markdownElementContent.includes("rror");
-		const FJCmd = this.config.FJCmd;
-
-
-		if (fenjie) {
-			await sleep(2e3);
-			fj.sendCmd(FJCmd);
-			fenjiejishu += 1;
-		}
-
-		if (swmeile) {
-			await sleep(2e3);
-			fj.sendCmd(`分解完毕，从本次启动开始总共分解次数：${fenjiejishu}`);
+		if (this.isAtSelf && this.message.peerUid === this.config.FJGroupId) {
+			const fj = this.groups.get("fj");
+			const fenjie = this.markdownElementContent.includes("分解了圣物");
+			const swmeile = this.markdownElementContent.includes("rror");
+			const FJCmd = this.config.FJCmd;
+	
+	
+			if (fenjie) {
+				await sleep(2e3);
+				fj.sendCmd(FJCmd);
+				fenjiejishu += 1;
+			}
+	
+			if (swmeile) {
+				await sleep(2e3);
+				fj.sendCmd(`分解完毕，从本次启动开始总共分解次数：${fenjiejishu}`);
+			}
 		}
 
 	}
