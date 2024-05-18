@@ -50,6 +50,36 @@ export interface ConfigType {
 	fubenSkillId: any;
 	/** 副本技能所需点数 */
 	fubenPointsRequiredForSkills: any;
+	/** 是否持续卡本 */
+	kabenFlag: any;
+	/** 卡本群号 */
+	kabenGroupId: any;
+	/** 是否持续抽卡 */
+	choukaFlag: boolean;
+	/** 是否持续喝水 */
+	hsFlag: boolean;
+	/** 喝神奇水命令 */
+	hscmd: any;
+	/** 持续抽卡/喝水群号 */
+	choukaGroupId: any;
+	/** 是否持续攻楼 */
+	gonglouFlag: boolean;
+	/** 持续攻楼群号 */
+	gonglouGroupId: any;
+	/** 灵宠 */
+	LCFlag: boolean;
+	/** 灵宠群号 */
+	LCGroupId: any;
+	/** 分解圣物 */
+	FJFlag: boolean;
+	/** 分解群号 */
+	FJGroupId: any;
+	/** 分解指令 */
+	FJCmd: any;
+	/** 散财 */
+	HUAQIANFlag: boolean;
+	/** 散财群号 */
+	HUAQIANGroupId: any;
 	定时指令Flag: boolean;
 	定时指令群: any;
 	定时指令间隔: number;

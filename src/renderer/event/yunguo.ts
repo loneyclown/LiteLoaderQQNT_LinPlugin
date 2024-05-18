@@ -12,6 +12,9 @@ import Message from "./message";
 const linPluginAPI = window.linPluginAPI;
 const pluginLog = linPluginAPI.pluginLog;
 
+// 全局变量
+var fenjiejishu = 0;
+
 class Group extends EuphonyGroup {
 	private at: At;
 
@@ -31,10 +34,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<
-		"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执",
-		Group
-	> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "G定时指令" | "G自定义回执", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -44,6 +44,13 @@ class Yunguo extends BaseEvent {
 		this.groups.set("boss", new Group(this.config.puGongGroupId, message));
 		this.groups.set("che", new Group(this.config.cheGroupId, message));
 		this.groups.set("hc", new Group(this.config.cxhcGroupId, message));
+		this.groups.set("kb", new Group(this.config.kabenGroupId, message));
+		this.groups.set("ck", new Group(this.config.choukaGroupId, message));
+		this.groups.set("hs", new Group(this.config.choukaGroupId, message));
+		this.groups.set("gl", new Group(this.config.gonglouGroupId, message));
+		this.groups.set("lc", new Group(this.config.LCGroupId, message));
+		this.groups.set("fj", new Group(this.config.FJGroupId, message));
+		this.groups.set("sc", new Group(this.config.HUAQIANGroupId, message));
 		this.groups.set("G定时指令", new Group(this.config.定时指令群, message));
 		this.groups.set(
 			"G自定义回执",
@@ -57,8 +64,29 @@ class Yunguo extends BaseEvent {
 			if (this.config.shuajiFlag) {
 				this.onShuaji();
 			}
+			if (this.config.kabenFlag) {
+				this.onKaben();
+			}
 			if (this.config.cxhcFlag) {
 				this.onCxhc();
+			}
+			if (this.config.choukaFlag) {
+				this.onChouka();
+			}
+			if (this.config.hsFlag) {
+				this.onHeshui();
+			}
+			if (this.config.gonglouFlag) {
+				this.onGonglou();
+			}
+			if (this.config.LCFlag) {
+				this.onLingchong();
+			}
+			if (this.config.FJFlag) {
+				this.onFenjie();
+			}
+			if (this.config.HUAQIANFlag) {
+				this.onSancai();
 			}
 			if (this.config.bossFlag) {
 				this.onBoss();
@@ -263,6 +291,171 @@ class Yunguo extends BaseEvent {
 			await sleep(1000);
 			hc.sendCmd(this.yunGuoData.hcCmdTemp);
 		}
+	}
+
+	/** 卡本 */
+	async onKaben() {
+		const kb = this.groups.get("kb");
+		if (this.isAtSelf) {
+
+			await sleep(2e3 + Math.random() * 1e3); //给这个sleep加个1秒以内的随机延迟，避免刷屏
+			if (this.markdownElementContent.includes("无法继续战斗") && !this.markdownElementContent.includes("成功复活")) {
+				kb.sendCmd(this.config.yaoshuiCmd);
+				await sleep(3 * 1e3 + Math.random() * 1e3);
+				kb.sendCmd("普攻");
+			} else {
+				kb.sendCmd("普攻");
+			}
+			return;
+		}
+	}
+
+	/** 持续抽卡 */
+	async onChouka() {
+		if (this.message.peerUid !== this.config.choukaGroupId) {
+			return;
+		}
+		const choukaFalg = this.markdownElementContent.includes("恭喜你抽中");
+		const CK_stopFalg = this.markdownElementContent.includes("你今日不足");
+		const TIANFANGFalg = this.markdownElementContent.includes("恭喜你抽中天方·");
+		const ckBtn = this.message.findButton("公会十连");
+		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+		const ck = this.groups.get("ck");
+		if (msgUid && msgUid === this.config.yunGuoUid) {
+			if (ckBtn) {
+				await sleep(10 * 1e3);
+				await this.setYunGuoData({ ckCmdTemp: ckBtn.data });
+				ck.sendCmd(ckBtn.data);
+				return;
+			}
+
+			if (TIANFANGFalg) {
+				await sleep(1e3);
+				ck.sendCmd("#####一级提示内容：你他吗出天方了#####");
+			}
+
+			if (CK_stopFalg) {
+				await sleep(1e3);
+				ck.sendCmd("抽卡停止");
+				return;
+			}
+		}
+	}
+
+	/**喝水 */
+	async onHeshui() {
+		const hs = this.groups.get("hs");
+		const hscmd = this.config.hscmd;
+		const hsTx = /你使用了(\d+)个初级/;
+		const hsTag = this.markdownElementContent.match(hsTx);
+
+		const hsn = /药水(:|：)(\d+)个/;
+		const hsNTag = this.markdownElementContent.match(hsn);
+		const hsnumber = parseInt(hsTag[1], 10);
+		const hsshengyunumber = parseInt(hsNTag?.[2], 10);
+
+		const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+
+		if (hsTag && hsshengyunumber >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
+			await sleep(1e3);
+			hs.sendCmd(hscmd);
+		}
+	}
+
+	/**灵宠 */
+	async onLingchong() {
+		const lc = this.groups.get("lc");
+		const backFlag = this.markdownElementContent.includes("回来了");
+		const KongxianFlag = this.markdownElementContent.includes("空闲");
+		const zhuangtai = /还有(\d+)秒可以召回/;
+		const ZHsecond = this.markdownElementContent.match(zhuangtai)?.[1];
+
+
+		if (this.isAtSelf) {
+
+			if (KongxianFlag) {
+				lc.sendCmd("派遣挖云石60");
+				await sleep(60 * 60 * 1e3);
+				lc.sendCmd("召回灵宠");
+
+			}
+
+			if (backFlag) {
+				lc.sendCmd("派遣挖云石60");
+				await sleep(60 * 60 * 1e3);
+				lc.sendCmd("召回灵宠");
+
+			}
+
+			if (ZHsecond) {
+				if (parseInt(ZHsecond, 10) > 0) {
+					await sleep(Number(ZHsecond) * 1e3);
+					lc.sendCmd("召回灵宠");
+				}
+			}
+		}
+	}
+
+	/** 持续攻楼 */
+	async onGonglou() {
+		const gl = this.groups.get("gl");
+		if (this.message.peerUid !== this.config.gonglouGroupId) {
+			return;
+		}
+		const upstairsFlag = this.markdownElementContent.includes("攻占信息");
+		const defeatFlag = this.markdownElementContent.includes("你击败了");
+		const dengdingFlag = this.markdownElementContent.match("你已暂时到达顶层");
+
+		if (this.isAtSelf) {
+			if (upstairsFlag && !defeatFlag) {
+				gl.sendCmd(this.config.yaoshuiCmd);
+				await sleep(60 * 1e3 + 2e3);
+				gl.sendCmd("/确定攻占");
+			}
+
+			if (defeatFlag) {
+				await sleep(60 * 1e3 + 2e3);
+				gl.sendCmd("/确定攻占");
+			}
+
+			if (dengdingFlag) {
+				gl.sendCmd("你度过万难险阻终登上顶峰!");
+			}
+		}
+	}
+
+	/**分解 */
+	async onFenjie() {
+		const fj = this.groups.get("fj");
+		const fenjie = this.markdownElementContent.includes("分解了圣物");
+		const swmeile = this.markdownElementContent.includes("rror");
+		const FJCmd = this.config.FJCmd;
+
+
+		if (fenjie) {
+			await sleep(2e3);
+			fj.sendCmd(FJCmd);
+			fenjiejishu += 1;
+		}
+
+		if (swmeile) {
+			await sleep(2e3);
+			fj.sendCmd(`分解完毕，从本次启动开始总共分解次数：${fenjiejishu}`);
+		}
+
+	}
+
+	/**散财童子 */
+	async onSancai() {
+		const sc = this.groups.get("sc");
+		const GOUMAIFalg = this.markdownElementContent.includes("你购买了");
+		const gold = this.markdownElementContent.match(/剩余(:|：)(\d+)/)?.[2];
+
+		if (this.isAtSelf && GOUMAIFalg && Number(gold)>200000000) {
+			sc.sendCmd("购买9 2");
+		}
+		await sleep(60 * 60 * 1e3);
+		sc.sendCmd("购买5 5");
 	}
 
 	async onBoss() {
