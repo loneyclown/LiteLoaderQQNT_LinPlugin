@@ -31,7 +31,10 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc", Group> = new Map();
+	private groups: Map<
+		"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执",
+		Group
+	> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -41,6 +44,11 @@ class Yunguo extends BaseEvent {
 		this.groups.set("boss", new Group(this.config.puGongGroupId, message));
 		this.groups.set("che", new Group(this.config.cheGroupId, message));
 		this.groups.set("hc", new Group(this.config.cxhcGroupId, message));
+		this.groups.set("G定时指令", new Group(this.config.定时指令群, message));
+		this.groups.set(
+			"G自定义回执",
+			new Group(this.config.自定义回执群, message)
+		);
 	}
 
 	onRecvActiveMsg() {
@@ -54,6 +62,12 @@ class Yunguo extends BaseEvent {
 			}
 			if (this.config.bossFlag) {
 				this.onBoss();
+			}
+			if (this.config.定时指令Flag) {
+				this.on定时指令();
+			}
+			if (this.config.自定义回执Flag) {
+				this.on自定义回执();
 			}
 			// if (this.message.peerUin === this.config.shuajiGroupId) {
 			// 	this.onShuaji();
@@ -540,6 +554,36 @@ class Yunguo extends BaseEvent {
 	// 		);
 	// 	}
 	// }
+
+	async on定时指令() {
+		if (this.message.peerUin !== this.config.定时指令群) {
+			return;
+		}
+		const G定时指令 = this.groups.get("G定时指令");
+		await sleep((this.config.定时指令间隔 ?? 0) * 1000);
+		if (this.config.定时指令Flag) {
+			G定时指令.sendCmd(this.config.定时指令);
+		}
+	}
+
+	async on自定义回执() {
+		if (this.message.peerUin !== this.config.自定义回执群) {
+			return;
+		}
+		const G自定义回执 = this.groups.get("G自定义回执");
+		const flag =
+			this.markdownElementContent.includes(this.config.自定义回执关键词) ||
+			this.message.findButton(this.config.自定义回执关键词) ||
+			new RegExp(this.config.自定义回执关键词).test(
+				this.markdownElementContent
+			);
+		if (flag) {
+			await sleep((this.config.自定义回执间隔 ?? 0) * 1000);
+			if (this.config.自定义回执Flag) {
+				G自定义回执.sendCmd(this.config.自定义回执回复指令);
+			}
+		}
+	}
 }
 
 export default Yunguo;

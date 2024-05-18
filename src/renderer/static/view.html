@@ -147,16 +147,76 @@
 							</div>
 						</div>
 						<div>
-							<div style="margin-top: 14px" class="row">
-								<setting-text>持续合成</setting-text>
-								<setting-switch key="cxhcFlag"></setting-switch>
-								<setting-text style="margin-left: 10px">合成群</setting-text>
-								<input key="cxhcGroupId" placeholder="请输入需要合成的群号" />
+							<div>
+								<div style="margin-top: 14px" class="row">
+									<setting-text>持续合成</setting-text>
+									<setting-switch key="cxhcFlag"></setting-switch>
+									<setting-text style="margin-left: 10px">合成群</setting-text>
+									<input key="cxhcGroupId" placeholder="请输入需要合成的群号" />
+								</div>
 							</div>
-							<!-- <div style="margin-top: 4px" class="row">
-								<setting-text>合成指令</setting-text>
-								<input key="hcCmd" placeholder="如：确定合成1:11" />
-							</div> -->
+							<div>
+								<div style="margin-top: 14px" class="row">
+									<setting-text>定时指令</setting-text>
+									<setting-switch key="定时指令Flag"></setting-switch>
+									<setting-text data-type="secondary" style="margin-left: 8px"
+										>定时发送指令</setting-text
+									>
+								</div>
+								<div style="margin-top: 4px" class="row">
+									<setting-text>群号: </setting-text>
+									<input
+										key="定时指令群"
+										placeholder="定时指令群号"
+										style="width: 140px"
+									/>
+									<input
+										key="定时指令"
+										placeholder="定时指令"
+										style="width: 200px"
+									/>
+									<input
+										key="定时指令间隔"
+										placeholder="间隔"
+										style="width: 100px"
+									/>
+								</div>
+							</div>
+							<div>
+								<div style="margin-top: 14px" class="row">
+									<setting-text>自定义回执</setting-text>
+									<setting-switch key="自定义回执Flag"></setting-switch>
+									<setting-text data-type="secondary" style="margin-left: 8px"
+										>根据自定义关键词回复指令</setting-text
+									>
+								</div>
+								<div style="margin-top: 4px" class="row">
+									<setting-text>群号: </setting-text>
+									<input
+										key="自定义回执群"
+										placeholder="自定义回执群号"
+										style="width: 140px"
+									/>
+									<input
+										key="自定义回执间隔"
+										placeholder="间隔"
+										style="width: 100px"
+									/>
+								</div>
+								<div style="margin-top: 4px" class="row">
+									<setting-text>选项: </setting-text>
+									<input
+										key="自定义回执回复指令"
+										placeholder="回复指令"
+										style="width: 200px"
+									/>
+									<input
+										key="自定义回执关键词"
+										placeholder="关键词或者正则表达式"
+										style="width: 200px"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 				</setting-item>

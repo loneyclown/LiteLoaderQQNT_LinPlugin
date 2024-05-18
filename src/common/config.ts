@@ -50,6 +50,15 @@ export interface ConfigType {
 	fubenSkillId: any;
 	/** 副本技能所需点数 */
 	fubenPointsRequiredForSkills: any;
+	定时指令Flag: boolean;
+	定时指令群: any;
+	定时指令间隔: number;
+	定时指令: string;
+	自定义回执Flag: boolean;
+	自定义回执群: any;
+	自定义回执关键词: string;
+	自定义回执回复指令: string;
+	自定义回执间隔: number;
 }
 
 class Config {
@@ -87,7 +96,7 @@ class Config {
 
 	async setConfig(key: keyof ConfigType, value: any) {
 		console.log("[LinPlugin info] >>> 设置配置: ", { key, value });
-		this._config[key] = value;
+		(this._config[key] as any) = value;
 		await this.setBaseConfig({ [key]: value });
 	}
 }
