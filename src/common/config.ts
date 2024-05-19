@@ -59,6 +59,10 @@ export interface ConfigType {
 	自定义回执关键词: string;
 	自定义回执回复指令: string;
 	自定义回执间隔: number;
+	自动合成Flag: boolean;
+	自动合成_装备id: any;
+	自动合成_胚子: any;
+	自动合成_剩余合成卡: number;
 }
 
 class Config {
