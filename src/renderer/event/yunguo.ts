@@ -70,12 +70,12 @@ class Yunguo extends BaseEvent {
 			if (this.config.cxhcFlag) {
 				this.onCxhc();
 			}
-			if (this.config.choukaFlag) {
+			if (this.config.choukaFlag||this.config.hsFlag) {
 				this.onChouka();
 			}
-			if (this.config.hsFlag) {
-				this.onHeshui();
-			}
+			// if (this.config.hsFlag) {
+			// 	this.onHeshui();
+			// }
 			if (this.config.gonglouFlag) {
 				this.onGonglou();
 			}
@@ -315,52 +315,73 @@ class Yunguo extends BaseEvent {
 		if (this.message.peerUid !== this.config.choukaGroupId) {
 			return;
 		}
-		const choukaFalg = this.markdownElementContent.includes("恭喜你抽中");
-		const CK_stopFalg = this.markdownElementContent.includes("你今日不足");
-		const TIANFANGFalg = this.markdownElementContent.includes("恭喜你抽中天方·");
-		const ckBtn = this.message.findButton("公会十连");
-		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
-		const ck = this.groups.get("ck");
-		if (msgUid && msgUid === this.config.yunGuoUid) {
-			if (ckBtn) {
-				await sleep(10 * 1e3);
-				await this.setYunGuoData({ ckCmdTemp: ckBtn.data });
-				ck.sendCmd(ckBtn.data);
-				return;
-			}
+		if (this.config.choukaFlag) {
+			const choukaFalg = this.markdownElementContent.includes("恭喜你抽中");
+			const CK_stopFalg = this.markdownElementContent.includes("你今日不足");
+			const TIANFANGFalg = this.markdownElementContent.includes("恭喜你抽中天方·");
+			const ckBtn = this.message.findButton("公会十连");
+			const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+			const ck = this.groups.get("ck");
+			if (msgUid && msgUid === this.config.yunGuoUid) {
+				if (ckBtn) {
+					await sleep(10 * 1e3);
+					await this.setYunGuoData({ ckCmdTemp: ckBtn.data });
+					ck.sendCmd(ckBtn.data);
+					return;
+				}
 
-			if (TIANFANGFalg) {
-				await sleep(1e3);
-				ck.sendCmd("#####一级提示内容：你他吗出天方了#####");
-			}
+				if (TIANFANGFalg) {
+					await sleep(1e3);
+					ck.sendCmd("#####一级提示内容：你他吗出天方了#####");
+				}
 
-			if (CK_stopFalg) {
+				if (CK_stopFalg) {
+					await sleep(1e3);
+					ck.sendCmd("抽卡停止");
+					return;
+				}
+			}
+		}
+		if (this.config.hsFlag) {
+			const hs = this.groups.get("hs");
+			const hscmd = this.config.hscmd;
+			const hsTx = /你使用了(\d+)个初级/;
+			const hsTag = this.markdownElementContent.match(hsTx);
+
+			const hsn = /药水(:|：)(\d+)个/;
+			const hsNTag = this.markdownElementContent.match(hsn);
+			const hsnumber = parseInt(hsTag[1], 10);
+			const hsshengyunumber = parseInt(hsNTag?.[2], 10);
+
+			const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+
+			if (hsTag && hsshengyunumber >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
 				await sleep(1e3);
-				ck.sendCmd("抽卡停止");
-				return;
+				hs.sendCmd(hscmd);
 			}
 		}
 	}
 
 	/**喝水 */
-	async onHeshui() {
-		const hs = this.groups.get("hs");
-		const hscmd = this.config.hscmd;
-		const hsTx = /你使用了(\d+)个初级/;
-		const hsTag = this.markdownElementContent.match(hsTx);
+	// async onHeshui() {
+	// 	const hs = this.groups.get("hs");
+	// 	const hscmd = this.config.hscmd;
+	// 	const hsTx = /你使用了(\d+)个初级/;
+	// 	const hsTag = this.markdownElementContent.match(hsTx);
 
-		const hsn = /药水(:|：)(\d+)个/;
-		const hsNTag = this.markdownElementContent.match(hsn);
-		const hsnumber = parseInt(hsTag[1], 10);
-		const hsshengyunumber = parseInt(hsNTag?.[2], 10);
+	// 	const hsn = /药水(:|：)(\d+)个/;
+	// 	const hsNTag = this.markdownElementContent.match(hsn);
+	// 	// const hsnumber = parseInt(hsTag[1], 10);
+	// 	// const hsshengyunumber = parseInt(hsNTag?.[2], 10);
+	// 	const hsshengyunumber = this.markdownElementContent.match(hsn)?.[2];
 
-		const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+	// 	const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 
-		if (hsTag && hsshengyunumber >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
-			await sleep(1e3);
-			hs.sendCmd(hscmd);
-		}
-	}
+	// 	if (hsTag && Number(hsshengyunumber) >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
+	// 		await sleep(1e3);
+	// 		hs.sendCmd(hscmd);
+	// 	}
+	// }
 
 	/**灵宠 */
 	async onLingchong() {
