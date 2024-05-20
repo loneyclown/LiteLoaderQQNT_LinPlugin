@@ -154,6 +154,36 @@
 									<setting-text style="margin-left: 10px">合成群</setting-text>
 									<input key="cxhcGroupId" placeholder="请输入需要合成的群号" />
 								</div>
+								<div style="margin-top: 4px" class="row">
+									<setting-text>自动合成</setting-text>
+									<setting-switch key="自动合成Flag"></setting-switch>
+									<setting-text data-type="secondary" style="margin-left: 8px"
+										>自动合成装备，直到背包没有了该装备或者剩余合成卡小于配置数值。</setting-text
+									>
+								</div>
+								<div style="margin-top: 4px" class="row">
+									<setting-text>选项: </setting-text>
+									<input
+										key="自动合成_装备id"
+										placeholder="装备id"
+										style="width: 100px"
+									/>
+									<input
+										key="自动合成_胚子"
+										placeholder="胚子"
+										style="width: 200px"
+									/>
+									<input
+										key="自动合成_剩余合成卡"
+										placeholder="剩余合成卡"
+										style="width: 100px"
+									/>
+									<setting-button
+										data-type="secondary"
+										id="重置自动合成背包页码"
+										>重置</setting-button
+									>
+								</div>
 							</div>
 							<div>
 								<div style="margin-top: 14px" class="row">

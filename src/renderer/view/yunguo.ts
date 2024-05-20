@@ -29,6 +29,17 @@ const initYunguoSettingView = async (view: Element) => {
 				);
 			});
 		});
+
+	view
+		.querySelector("#重置自动合成背包页码")
+		.addEventListener("click", async () => {
+			const newData = {
+				...linPluginAPI.getConfig("yunGuoDataCache"),
+				自动合成_背包页码: 1,
+			};
+			await linPluginAPI.setConfig("yunGuoDataCache", newData);
+			alert("重置成功");
+		});
 };
 
 export default initYunguoSettingView;

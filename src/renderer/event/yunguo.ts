@@ -64,11 +64,8 @@ class Yunguo extends BaseEvent {
 			if (this.config.shuajiFlag) {
 				this.onShuaji();
 			}
-			if (this.config.kabenFlag) {
-				this.onKaben();
-			}
-			if (this.config.cxhcFlag) {
-				this.onCxhc();
+			if (this.config.cxhcFlag || this.config.自动合成Flag) {
+				this.on合成();
 			}
 			if (this.config.choukaFlag||this.config.hsFlag) {
 				this.onChouka();
@@ -96,6 +93,8 @@ class Yunguo extends BaseEvent {
 			}
 			if (this.config.自定义回执Flag) {
 				this.on自定义回执();
+			}
+			if (this.config.自动合成Flag) {
 			}
 			// if (this.message.peerUin === this.config.shuajiGroupId) {
 			// 	this.onShuaji();
@@ -262,11 +261,20 @@ class Yunguo extends BaseEvent {
 		}
 	}
 
-	/** 持续合成 */
-	async onCxhc() {
+	async on合成() {
 		if (this.message.peerUid !== this.config.cxhcGroupId) {
 			return;
 		}
+
+		console.log("测试云国合成", {
+			qqMsg: this.message.qqMsg,
+			globalData: this.globalData,
+			isAtSelf: this.isAtSelf,
+			atType: this.atType,
+			textElementAtNtUid: this.textElementAtNtUid,
+			isUseItemSelf: this.isUseItemSelf,
+		});
+
 		const hcBtn = this.message.findButton("确定合成");
 		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 		const hc = this.groups.get("hc");
@@ -278,7 +286,53 @@ class Yunguo extends BaseEvent {
 				return;
 			}
 			if (this.markdownElementContent.includes("合成成功")) {
+				const page = this.yunGuoData.hcCmdTemp
+					? Math.floor(this.yunGuoData.hcCmdTemp.split(":")[1] / 5)
+					: 1;
 				await this.setYunGuoData({ hcCmdTemp: "" });
+				const 合成卡_num = this.getNumberValue(
+					this.markdownElementContent.match(/当前按合成卡数量：(\d+)/)[1]
+				);
+				if (
+					this.config.自动合成Flag &&
+					合成卡_num > this.config.自动合成_剩余合成卡
+				) {
+					await sleep(1000);
+					await this.setYunGuoData({ 自动合成_背包页码: page });
+					hc.sendCmd("背包");
+				}
+				return;
+			}
+			if (
+				this.config.自动合成Flag &&
+				this.markdownElementContent.includes("背包信息") &&
+				!this.markdownElementContent.includes("圣物")
+			) {
+				await this.setYunGuoData({
+					自动合成_背包页码: (this.yunGuoData.自动合成_背包页码 ?? 0) + 1,
+				});
+				const regex = /#■ (\d+).(.*)\r/g;
+				const matches = this.markdownElementContent.matchAll(regex);
+				if ([...matches].length === 0) {
+					await this.setYunGuoData({ 自动合成_背包页码: 1 });
+					return;
+				}
+				let 胚子_id: any = false;
+				for (const match of this.markdownElementContent.matchAll(regex)) {
+					const [, id, name] = match;
+					console.log({ id, name, match });
+					if (name === this.config.自动合成_胚子) {
+						胚子_id = id;
+						break;
+					}
+				}
+				if (胚子_id) {
+					await sleep(1000);
+					hc.sendCmd(`合成${this.config.自动合成_装备id}:${胚子_id}`);
+					return;
+				}
+				await sleep(3000);
+				hc.sendCmd(`背包${this.yunGuoData.自动合成_背包页码}`);
 				return;
 			}
 		}
