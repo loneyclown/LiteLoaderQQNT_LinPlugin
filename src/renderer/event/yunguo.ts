@@ -161,10 +161,11 @@ class Yunguo extends BaseEvent {
 		// 发现组队信息
 		if (this.genCheBtn) {
 			const [str1, str2] = this.markdownElementContent.split("加入了组队");
-			const 当前人数 = this.getNumberValue(
-				str2.match(/当前人数：(\d+)人/)?.[1]
-			);
-			if (当前人数 >= this.config.跟车次序 && !this.isSelfInTheChe) {
+			const 当前人数 =
+				this.getNumberValue(str2?.match(/当前人数：(\d+)人/)?.[1]) ?? 999;
+			console.log({ str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
+			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
+			if (当前人数 >= 跟车次序 && !this.isSelfInTheChe) {
 				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
 				await this.setYunGuoData({
 					genCheCmdTemp,
