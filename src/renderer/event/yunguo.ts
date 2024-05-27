@@ -32,7 +32,7 @@ class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
 	private groups: Map<
-		"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执",
+		"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "gc",
 		Group
 	> = new Map();
 
@@ -49,6 +49,7 @@ class Yunguo extends BaseEvent {
 			"G自定义回执",
 			new Group(this.config.自定义回执群, message)
 		);
+		this.groups.set("gc", new Group(this.config.跟车群, message));
 	}
 
 	onRecvActiveMsg() {
@@ -69,43 +70,11 @@ class Yunguo extends BaseEvent {
 			if (this.config.自定义回执Flag) {
 				this.on自定义回执();
 			}
-			if (this.config.自动合成Flag) {
+			if (this.config.自动跟车Flag) {
+				this.on自动跟车();
 			}
-			// if (this.message.peerUin === this.config.shuajiGroupId) {
-			// 	this.onShuaji();
-			// 	return;
-			// }
-			// if (this.message.peerUid === this.config.cxhcGroupId) {
-			// 	this.onCxhc();
-			// 	return;
-			// }
-			// if (this.message.peerUid === this.config.puGongGroupId) {
-			// 	this.onBoss();
-			// 	// return;
-			// }
-			// if (this.message.peerUid === this.config.cheGroupId) {
-			// 	this.onChe();
-			// 	// return;
-			// }
 		}
 	}
-
-	// private getGroup()
-
-	// private sendCmd(group: Group, msg: string) {
-	// 	const at = new At(this.message.senderUin, this.message.senderUid);
-	// 	this.sendGroupMessage(group, ` ${msg}`, at);
-	// }
-
-	// private sendShuajiCmd(msg: string) {
-	// 	this.sendCmd(new Group(this.config.shuajiGroupId), msg);
-	// }
-	// private sendBossCmd(msg: string) {
-	// 	this.sendCmd(new Group(this.config.puGongGroupId), msg);
-	// }
-	// private sendCheCmd(msg: string) {
-	// 	this.sendCmd(new Group(this.config.cheGroupId), msg);
-	// }
 
 	private async setYunGuoData(data) {
 		const newData = { ...this.yunGuoData, ...data };
@@ -185,6 +154,46 @@ class Yunguo extends BaseEvent {
 			return Number(value);
 		}
 		return 0;
+	}
+
+	private async 跟车通常处理() {
+		const gc = this.groups.get("gc");
+		// 发现组队信息
+		if (this.genCheBtn) {
+			const [str1, str2] = this.markdownElementContent.split("加入了组队");
+			const 当前人数 = this.getNumberValue(
+				str2.match(/当前人数：(\d+)人/)?.[1]
+			);
+			if (当前人数 >= this.config.跟车次序 && !this.isSelfInTheChe) {
+				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
+				await this.setYunGuoData({
+					genCheCmdTemp,
+					gencheCmdTempBase: genCheCmdTemp,
+				});
+				await sleep(this.config.跟车间隔 ?? 3000);
+				gc.sendCmd(genCheCmdTemp);
+				return;
+			}
+		}
+	}
+
+	private async 跟车异常处理() {
+		const gc = this.groups.get("gc");
+		// 没钱没花了
+		if (this.markdownElementContent.match(/你的(金币|花)不足/)) {
+			await linPluginAPI.setConfig("自动跟车Flag", false);
+			return;
+		}
+		// 卡队
+		if (this.markdownElementContent.includes("你已经加入了别人的组队")) {
+			await sleep(1000);
+			gc.sendCmd("放弃挑战");
+			return;
+		}
+		if (this.markdownElementContent.includes("你放弃了boss挑战")) {
+			await sleep(1000);
+			gc.sendCmd(this.yunGuoData.gencheCmdTempBase);
+		}
 	}
 
 	async onShuaji() {
@@ -405,83 +414,6 @@ class Yunguo extends BaseEvent {
 		}
 	}
 
-	// async onBoss() {
-	// 	console.log("测试云国boss", {
-	// 		qqMsg: this.message.qqMsg,
-	// 		globalData: this.globalData,
-	// 		isAtSelf: this.isAtSelf,
-	// 		atType: this.atType,
-	// 		textElementAtNtUid: this.textElementAtNtUid,
-	// 	});
-	// 	if (this.config.bossFlag && this.isAtSelf) {
-	// 		// pluginLog("测试云国boss", this.message.qqMsg);
-	// 		const regex = /boss血量：(\d+)\r/;
-	// 		const bossHp = this.markdownElementContent.match(regex)?.[1];
-	// 		const isSs = this.markdownElementContent.match(/你使用了(\d+)个圣水/);
-
-	// 		// 消息包含boss血量或者使用圣水
-	// 		if (bossHp || isSs) {
-	// 			// 当前不在车上且未开启纯粹普攻模式
-	// 			if (!this.yunGuoData.isInChe && !this.config.chunCuiPuGong) {
-	// 				return;
-	// 			}
-
-	// 			const hyFlag =
-	// 				this.config.pugongAutoYaoFlag &&
-	// 				this.markdownElementContent.includes("无法继续战斗") &&
-	// 				!this.markdownElementContent.includes("成功复活");
-
-	// 			if (hyFlag) {
-	// 				await sleep(1000);
-	// 				this.sendBossCmd(this.config.yaoshuiCmd);
-	// 				return;
-	// 			}
-
-	// 			if (
-	// 				this.markdownElementContent.includes("你们击败了boss") ||
-	// 				this.config.diaoShuiAutoFaCheFlag
-	// 			) {
-	// 				let arr = this.markdownElementContent.split("\r\r***\r\r");
-	// 				arr = arr.filter((x) => x.includes("用户:"));
-	// 				let flag = false;
-	// 				arr.forEach((value) => {
-	// 					if (
-	// 						value.includes("恭喜获得时空跳跃药水") &&
-	// 						value.includes(this.config.yunGuoUid)
-	// 					) {
-	// 						flag = true;
-	// 					}
-	// 				});
-	// 				if (flag) {
-	// 					await sleep(2000);
-	// 					this.sendBossCmd(this.config.xuCheCmd);
-	// 					return;
-	// 				}
-	// 			}
-
-	// 			await sleep(3000);
-	// 			this.sendBossCmd("普攻");
-	// 			return;
-	// 		}
-
-	// 		if (this.config.autoFaCheFlag && !this.yunGuoData.isFaCheCD) {
-	// 			const cdRegex = /别着急嘛，boss又不会跑，还有(\d+)秒冷却/;
-	// 			const seconds = this.markdownElementContent.match(cdRegex)?.[1];
-	// 			if (seconds && Number.isNaN(Number(seconds)) && Number(seconds) > 10) {
-	// 				await this.setYunGuoData({ isFaCheCD: true, isInChe: false });
-	// 				if (this.config.shuajiFlag) {
-	// 					await sleep(1000);
-	// 					this.sendShuajiCmd("简单游历");
-	// 					return;
-	// 				}
-	// 				await sleep(Number(seconds) * 1000 + 3000);
-	// 				this.sendCheCmd(this.config.faCheCmd);
-	// 				return;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	// async onChe() {
 	// 	// pluginLog("测试云国车", this.message.qqMsg);
 	// 	console.log("测试云国车", {
@@ -599,36 +531,6 @@ class Yunguo extends BaseEvent {
 	// 	}
 	// }
 
-	// /** 持续合成 */
-	// async onCxhc() {
-	// 	const hcBtn = this.message.findButton("确定合成");
-	// 	const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
-	// 	if (msgUid && msgUid === this.config.yunGuoUid) {
-	// 		if (hcBtn) {
-	// 			await sleep(1000);
-	// 			await this.setYunGuoData({ hcCmdTemp: hcBtn.data });
-	// 			this.sendCmd(new Group(this.config.cxhcGroupId), hcBtn.data);
-	// 			return;
-	// 		}
-	// 		if (this.markdownElementContent.includes("合成成功")) {
-	// 			await this.setYunGuoData({ hcCmdTemp: "" });
-	// 			return;
-	// 		}
-	// 	}
-	// 	if (
-	// 		this.markdownElementContent.includes("合成失败") &&
-	// 		this.yunGuoData.hcCmdTemp &&
-	// 		this.atType === 6 &&
-	// 		this.textElementAtNtUid === this.globalData.selfUid
-	// 	) {
-	// 		await sleep(1000);
-	// 		this.sendCmd(
-	// 			new Group(this.config.cxhcGroupId),
-	// 			this.yunGuoData.hcCmdTemp
-	// 		);
-	// 	}
-	// }
-
 	async on定时指令() {
 		if (this.message.peerUin !== this.config.定时指令群) {
 			return;
@@ -656,6 +558,19 @@ class Yunguo extends BaseEvent {
 			if (this.config.自定义回执Flag) {
 				G自定义回执.sendCmd(this.config.自定义回执回复指令);
 			}
+		}
+	}
+
+	async on自动跟车() {
+		if (this.message.peerUid !== this.config.跟车群) {
+			return;
+		}
+
+		// 此处处理不需要艾特自己的消息
+		this.跟车通常处理();
+		// 此处处理需要艾特自己的消息
+		if (this.isAtSelf) {
+			this.跟车异常处理();
 		}
 	}
 }
