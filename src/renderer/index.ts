@@ -2,6 +2,7 @@ import { sleep } from "../common/utils";
 import Message, { NtQQMsg } from "./event/message";
 import WuxiaEvent from "./event/wuxia";
 import Yunguo from "./event/yunguo";
+import { Group, PlainText } from "./lib/euphony/src";
 import initYunguoSettingView from "./view/yunguo";
 
 const linPluginAPI = window.linPluginAPI;
@@ -53,6 +54,16 @@ const init = async () => {
 		({ msgList }: { msgList: NtQQMsg[] }) => {
 			try {
 				const message = new Message(msgList);
+
+				if (message.qqMsg && message.qqMsg.senderUin === "2189396527") {
+					const arr = message.elements.filter((e) => e.elementType === 1);
+					const find = arr.find((e) => e.textElement.content === "锵锵！");
+					if (find) {
+						const group = new Group(message.qqMsg.peerUin);
+						group.sendMessage(new PlainText("锵锵！"));
+					}
+				}
+
 				const yunguo = new Yunguo(message);
 				yunguo.onRecvActiveMsg();
 

@@ -15,8 +15,6 @@ const pluginLog = linPluginAPI.pluginLog;
 // 全局变量
 var fenjiejishu = 0;
 var songhuajishu = 0;
-var serial = 0;
-var firstCHECK = false;
 
 class Group extends EuphonyGroup {
 	private at: At;
@@ -37,7 +35,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "G定时指令" | "G自定义回执" | "tz" | "songhua", Group> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -61,6 +59,7 @@ class Yunguo extends BaseEvent {
 		);
 		this.groups.set("tz", new Group(this.config.tzGroupId, message));
 		// this.groups.set("songhua", new Group(this.config.songhuaGroupId, message));
+		this.groups.set("gc", new Group(this.config.跟车群, message));
 	}
 
 	onRecvActiveMsg() {
@@ -122,9 +121,12 @@ class Yunguo extends BaseEvent {
 			// 	this.onBoss();
 			// 	// return;
 			// }
-			if (this.message.peerUid === this.config.cheGroupId) {
-				this.onChe();
-				// return;
+			// if (this.message.peerUid === this.config.cheGroupId) {
+			// 	this.onChe();
+			// 	// return;
+			// }
+			if (this.config.自动跟车Flag) {
+				this.on自动跟车();
 			}
 		}
 	}
@@ -224,6 +226,47 @@ class Yunguo extends BaseEvent {
 			return Number(value);
 		}
 		return 0;
+	}
+
+	private async 跟车通常处理() {
+		const gc = this.groups.get("gc");
+		// 发现组队信息
+		if (this.genCheBtn) {
+			const [str1, str2] = this.markdownElementContent.split("加入了组队");
+			const 当前人数 =
+				this.getNumberValue(str2?.match(/当前人数：(\d+)人/)?.[1]) ?? 999;
+			console.log({ str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
+			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
+			if (当前人数 >= 跟车次序 && !this.isSelfInTheChe) {
+				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
+				await this.setYunGuoData({
+					genCheCmdTemp,
+					gencheCmdTempBase: genCheCmdTemp,
+				});
+				await sleep(this.config.跟车间隔 ?? 3000);
+				gc.sendCmd(genCheCmdTemp);
+				return;
+			}
+		}
+	}
+
+	private async 跟车异常处理() {
+		const gc = this.groups.get("gc");
+		// 没钱没花了
+		if (this.markdownElementContent.match(/你的(金币|花)不足/)) {
+			await linPluginAPI.setConfig("自动跟车Flag", false);
+			return;
+		}
+		// 卡队
+		if (this.markdownElementContent.includes("你已经加入了别人的组队")) {
+			await sleep(1000);
+			gc.sendCmd("放弃挑战");
+			return;
+		}
+		if (this.markdownElementContent.includes("你放弃了boss挑战")) {
+			await sleep(1000);
+			gc.sendCmd(this.yunGuoData.gencheCmdTempBase);
+		}
 	}
 
 	async onShuaji() {
@@ -688,233 +731,120 @@ class Yunguo extends BaseEvent {
 		}
 	}
 
-	// async onBoss() {
-	// 	console.log("测试云国boss", {
+	// async onChe() {
+	// 	// pluginLog("测试云国车", this.message.qqMsg);
+	// 	console.log("测试云国车", {
 	// 		qqMsg: this.message.qqMsg,
 	// 		globalData: this.globalData,
 	// 		isAtSelf: this.isAtSelf,
 	// 		atType: this.atType,
 	// 		textElementAtNtUid: this.textElementAtNtUid,
 	// 	});
-	// 	if (this.config.bossFlag && this.isAtSelf) {
-	// 		// pluginLog("测试云国boss", this.message.qqMsg);
-	// 		const regex = /boss血量：(\d+)\r/;
-	// 		const bossHp = this.markdownElementContent.match(regex)?.[1];
-	// 		const isSs = this.markdownElementContent.match(/你使用了(\d+)个圣水/);
 
-	// 		// 消息包含boss血量或者使用圣水
-	// 		if (bossHp || isSs) {
-	// 			// 当前不在车上且未开启纯粹普攻模式
-	// 			if (!this.yunGuoData.isInChe && !this.config.chunCuiPuGong) {
-	// 				return;
-	// 			}
-
-	// 			const hyFlag =
-	// 				this.config.pugongAutoYaoFlag &&
-	// 				this.markdownElementContent.includes("无法继续战斗") &&
-	// 				!this.markdownElementContent.includes("成功复活");
-
-	// 			if (hyFlag) {
-	// 				await sleep(1000);
-	// 				this.sendBossCmd(this.config.yaoshuiCmd);
-	// 				return;
-	// 			}
-
-	// 			if (
-	// 				this.markdownElementContent.includes("你们击败了boss") ||
-	// 				this.config.diaoShuiAutoFaCheFlag
-	// 			) {
-	// 				let arr = this.markdownElementContent.split("\r\r***\r\r");
-	// 				arr = arr.filter((x) => x.includes("用户:"));
-	// 				let flag = false;
-	// 				arr.forEach((value) => {
-	// 					if (
-	// 						value.includes("恭喜获得时空跳跃药水") &&
-	// 						value.includes(this.config.yunGuoUid)
-	// 					) {
-	// 						flag = true;
-	// 					}
+	// 	// 此处处理不需要艾特自己的消息
+	// 	// 发现组队信息
+	// 	if (this.genCheBtn) {
+	// 		// 跟车员
+	// 		if (this.config.autoGenCheFlag) {
+	// 			// if (this.markdownElementContent.includes("加入了组队")) {
+	// 			// 	const [str1, str2] = this.markdownElementContent.split("加入了组队");
+	// 			// 	const uid = str1.match(/用户:(\d+)\r/)[1];
+	// 			// 	if (uid && uid === this.config.yunGuoUid) {
+	// 			// 		const str3 = str2.split("当前人数")[0];
+	// 			// 		const currHeaderUid = str3.match(/用户:(\d+)\r/)[1];
+	// 			// 		if (currHeaderUid) {
+	// 			// 			await this.setYunGuoData({ currHeaderUid });
+	// 			// 		}
+	// 			// 	}
+	// 			// }
+	// 			if (!this.isSelfInTheChe) {
+	// 				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
+	// 				await this.setYunGuoData({
+	// 					genCheCmdTemp,
+	// 					gencheCmdTempBase: genCheCmdTemp,
 	// 				});
-	// 				if (flag) {
-	// 					await sleep(2000);
-	// 					this.sendBossCmd(this.config.xuCheCmd);
-	// 					return;
-	// 				}
+	// 				await sleep(2000);
+	// 				this.sendCheCmd(genCheCmdTemp);
+	// 				return;
 	// 			}
-
-	// 			await sleep(3000);
-	// 			this.sendBossCmd("普攻");
-	// 			return;
+	// 			const genCheCmdTemp = this.yunGuoData.genCheCmdTemp;
+	// 			if (genCheCmdTemp) {
+	// 				await this.setYunGuoData({ genCheCmdTemp: "" });
+	// 				return;
+	// 			}
 	// 		}
-
-	// 		if (this.config.autoFaCheFlag && !this.yunGuoData.isFaCheCD) {
-	// 			const cdRegex = /别着急嘛，boss又不会跑，还有(\d+)秒冷却/;
-	// 			const seconds = this.markdownElementContent.match(cdRegex)?.[1];
-	// 			if (seconds && Number.isNaN(Number(seconds)) && Number(seconds) > 10) {
-	// 				await this.setYunGuoData({ isFaCheCD: true, isInChe: false });
-	// 				if (this.config.shuajiFlag) {
-	// 					await sleep(1000);
-	// 					this.sendShuajiCmd("简单游历");
+	// 		// 发车员
+	// 		if (this.config.autoFaCheFlag) {
+	// 			const faQiRenUid = this.markdownElementContent.match(/用户:(\d+)/)[1];
+	// 			if (faQiRenUid && faQiRenUid === this.config.yunGuoUid) {
+	// 				// 发起组队
+	// 				if (this.markdownElementContent.includes("发起了组队")) {
+	// 					// 等待2分钟
+	// 					await sleep(120 * 1000);
+	// 					const cmd = this.markdownElementContent.includes("公会")
+	// 						? "开始公会组队挑战"
+	// 						: "开始组队挑战";
+	// 					this.sendCheCmd(cmd);
 	// 					return;
 	// 				}
-	// 				await sleep(Number(seconds) * 1000 + 3000);
-	// 				this.sendCheCmd(this.config.faCheCmd);
 	// 				return;
 	// 			}
 	// 		}
 	// 	}
-	// }
 
-	async onChe() {
+	// 	// 此处处理需要艾特自己的消息
+	// 	if (this.isAtSelf) {
+	// 		// 只有开启了自动跟车或者自动发车才执行
+	// 		if (this.config.autoFaCheFlag || this.config.autoGenCheFlag) {
+	// 			if (this.markdownElementContent.match(/你的(金币|花)不足/)) {
+	// 				await linPluginAPI.setConfig(CONFIG_KEY.autoFaCheFlag, false);
+	// 				await linPluginAPI.setConfig(CONFIG_KEY.autoGenCheFlag, false);
+	// 				return;
+	// 			}
 
-		if (this.message.peerUid !== this.config.cheGroupId) {
-			return;
-		}
+	// 			// 开始组队挑战
+	// 			if (this.markdownElementContent.includes("开始了组队挑战")) {
+	// 				await this.setYunGuoData({ isInChe: true, isFaCheCD: false });
+	// 				await sleep(3000);
+	// 				this.sendBossCmd("普攻");
+	// 				return;
+	// 			}
 
-		// pluginLog("测试云国车", this.message.qqMsg);
-		console.log("测试云国车", {
-			qqMsg: this.message.qqMsg,
-			globalData: this.globalData,
-			isAtSelf: this.isAtSelf,
-			atType: this.atType,
-			textElementAtNtUid: this.textElementAtNtUid,
-		});
+	// 			// 卡队
+	// 			if (this.markdownElementContent.includes("你已经加入了别人的组队")) {
+	// 				await sleep(1000);
+	// 				this.sendCheCmd("放弃挑战");
+	// 				return;
+	// 			}
+	// 			if (this.markdownElementContent.includes("你放弃了boss挑战")) {
+	// 				await sleep(1000);
+	// 				this.sendCheCmd(this.yunGuoData.gencheCmdTempBase);
+	// 			}
 
-		const che = this.groups.get("che");
-
-		// 此处处理不需要艾特自己的消息
-		// 发现组队信息
-		if (this.genCheBtn) {
-			// 跟车员
-			if (this.config.autoGenCheFlag) {
-				if (!this.isSelfInTheChe) {
-					const genCheCmdTemp = `${this.genCheBtn.data}确定`;
-					await this.setYunGuoData({
-						genCheCmdTemp: genCheCmdTemp,
-						gencheCmdTempBase: genCheCmdTemp
-					});
-
-					serial = Number(this.config.sccx);
-
-					const ziji = this.markdownElementContent.match(/用户:(\d+)/)[1];
-					if (ziji && ziji != this.config.yunGuoUid && !firstCHECK) {
-						firstCHECK = true;
-						await sleep((serial - 1) * 5e3 + 3.5e3);
-						che.sendCmd(genCheCmdTemp);
-						firstCHECK = false;
-					}
-				}
-				const genCheCmdTemp = this.yunGuoData.genCheCmdTemp;
-				if (genCheCmdTemp) {
-					await this.setYunGuoData({ genCheCmdTemp: "" });
-					return;
-				}
-			}
-
-			// 发车员
-			if (this.config.autoFaCheFlag) {
-				const faQiRenUid = this.markdownElementContent.match(/用户:(\d+)/)[1];
-				if (faQiRenUid && faQiRenUid === this.config.yunGuoUid) {
-					// 发起组队
-					if (this.markdownElementContent.includes("发起了组队")) {
-						// 等待2分钟
-						await sleep(Number(this.config.fcsj) * 1e3);
-						const cmd = this.markdownElementContent.includes("公会")
-							? "开始公会组队挑战"
-							: "开始组队挑战";
-						che.sendCmd(cmd);
-						return;
-					}
-					return;
-				}
-			}
-		}
-
-		// 此处处理需要艾特自己的消息
-		if (this.isAtSelf) {
-			// 只有开启了自动跟车或者自动发车才执行
-			if (this.config.autoFaCheFlag || this.config.autoGenCheFlag) {
-				if (this.markdownElementContent.match(/你的(金币|花)不足/)) {
-					await linPluginAPI.setConfig(this.config.autoFaCheFlag, false);
-					await linPluginAPI.setConfig(this.config.autoGenCheFlag, false);
-					return;
-				}
-
-				// 开始组队挑战
-				if (this.markdownElementContent.includes("开始了组队挑战")) {
-					await this.setYunGuoData({ isInChe: true, isFaCheCD: false });
-					await sleep(3e3);
-					che.sendCmd("普攻");
-					return;
-				}
-
-				// 卡队
-				if (this.markdownElementContent.includes("你已经加入了别人的组队") && !this.isSelfInTheChe) {
-					await sleep(1000);
-					che.sendCmd("放弃挑战");
-					return;
-				}
-
-				if (this.markdownElementContent.includes("你放弃了boss挑战") && !this.isSelfInTheChe) {
-					await sleep(1000);
-					che.sendCmd(this.yunGuoData.gencheCmdTempBase);
-				}
-
-				// 加入组队cd
-				const cdRegex = /请等待\d+秒后再次点击加入/;
-				const seconds = this.markdownElementContent.match(cdRegex)?.[1];
-				
-				if (
-					this.markdownElementContent.match(cdRegex) &&
-					this.yunGuoData.genCheCmdTemp &&
-					seconds &&
-					Number.isNaN(Number(seconds))
-				) {
-					await sleep(Number(seconds) * 1e3 + 1e3);
-					che.sendCmd(this.yunGuoData.gencheCmdTempBase);
-					return;
-				}
-			}
-		}
-
-		// 此处处理自己使用某物品的消息
-		if (this.isUseItemSelf) {
-			if (this.markdownElementContent.includes("时空跳跃药水")) {
-				await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
-				await sleep(2e3);
-				che.sendCmd(this.config.faCheCmd);
-				return;
-			}
-		}
-	}
-
-	// /** 持续合成 */
-	// async onCxhc() {
-	// 	const hcBtn = this.message.findButton("确定合成");
-	// 	const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
-	// 	if (msgUid && msgUid === this.config.yunGuoUid) {
-	// 		if (hcBtn) {
-	// 			await sleep(1000);
-	// 			await this.setYunGuoData({ hcCmdTemp: hcBtn.data });
-	// 			this.sendCmd(new Group(this.config.cxhcGroupId), hcBtn.data);
-	// 			return;
-	// 		}
-	// 		if (this.markdownElementContent.includes("合成成功")) {
-	// 			await this.setYunGuoData({ hcCmdTemp: "" });
-	// 			return;
+	// 			// 加入组队cd
+	// 			const cdRegex = /请等待\d+秒后再次点击加入/;
+	// 			const seconds = this.markdownElementContent.match(cdRegex)?.[1];
+	// 			if (
+	// 				this.markdownElementContent.match(cdRegex) &&
+	// 				this.yunGuoData.genCheCmdTemp &&
+	// 				seconds &&
+	// 				Number.isNaN(Number(seconds))
+	// 			) {
+	// 				await sleep(Number(seconds) * 1000);
+	// 				this.sendCheCmd(this.yunGuoData.gencheCmdTempBase);
+	// 				return;
+	// 			}
 	// 		}
 	// 	}
-	// 	if (
-	// 		this.markdownElementContent.includes("合成失败") &&
-	// 		this.yunGuoData.hcCmdTemp &&
-	// 		this.atType === 6 &&
-	// 		this.textElementAtNtUid === this.globalData.selfUid
-	// 	) {
-	// 		await sleep(1000);
-	// 		this.sendCmd(
-	// 			new Group(this.config.cxhcGroupId),
-	// 			this.yunGuoData.hcCmdTemp
-	// 		);
+
+	// 	// 此处处理自己使用某物品的消息
+	// 	if (this.isUseItemSelf) {
+	// 		if (this.markdownElementContent.includes("时空跳跃药水")) {
+	// 			await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
+	// 			await sleep(2000);
+	// 			this.sendCheCmd(this.config.faCheCmd);
+	// 			return;
+	// 		}
 	// 	}
 	// }
 
@@ -945,6 +875,19 @@ class Yunguo extends BaseEvent {
 			if (this.config.自定义回执Flag) {
 				G自定义回执.sendCmd(this.config.自定义回执回复指令);
 			}
+		}
+	}
+
+	async on自动跟车() {
+		if (this.message.peerUid !== this.config.跟车群) {
+			return;
+		}
+
+		// 此处处理不需要艾特自己的消息
+		this.跟车通常处理();
+		// 此处处理需要艾特自己的消息
+		if (this.isAtSelf) {
+			this.跟车异常处理();
 		}
 	}
 }

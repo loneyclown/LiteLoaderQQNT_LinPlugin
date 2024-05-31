@@ -29,7 +29,7 @@ export interface ConfigType {
 	/** 发车命令 */
 	faCheCmd: any;
 	/** 是否自动跟车 */
-	autoGenCheFlag: any;
+	自动跟车Flag: any;
 	/** 车群 */
 	cheGroupId: any;
 	/** 纯粹的普攻 */
@@ -107,12 +107,9 @@ export interface ConfigType {
 	// songhuaksCmd: any;
 	/** 结束送花ID */
 	// songhuajsCmd: any;
-	/** 立刻发车 */
-	lkfcFlag: boolean;
-	/** 上车次序 */
-	sccx: any;
-	/** 动态调控发车时间 */
-	fcsj: number
+	跟车群: any;
+	跟车间隔: number;
+	跟车次序: number;
 }
 
 class Config {
