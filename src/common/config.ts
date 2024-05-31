@@ -93,6 +93,26 @@ export interface ConfigType {
 	自动合成_装备id: any;
 	自动合成_胚子: any;
 	自动合成_剩余合成卡: number;
+	/** 分解圣物 */
+	tzFlag: boolean;
+	/** 分解群号 */
+	tzGroupId: any;
+	/** 分解指令 */
+	tzCmd: any;
+	/** 送花 */
+	// songhuaFlag: boolean;
+	/** 送花群号 */
+	// songhuaGroupId: any;
+	/** 开始送花ID */
+	// songhuaksCmd: any;
+	/** 结束送花ID */
+	// songhuajsCmd: any;
+	/** 立刻发车 */
+	lkfcFlag: boolean;
+	/** 上车次序 */
+	sccx: any;
+	/** 动态调控发车时间 */
+	fcsj: number
 }
 
 class Config {
