@@ -110,6 +110,12 @@ export interface ConfigType {
 	跟车群: any;
 	跟车间隔: number;
 	跟车次序: number;
+	/** 傀儡开关 */
+	kuilieFlag: any;
+	/** 傀儡QQ */
+	klQQ: any;
+	/** 傀儡权限人QQ */
+	klqxqq: any;
 }
 
 class Config {

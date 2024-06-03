@@ -18,15 +18,26 @@ var songhuajishu = 0;
 
 class Group extends EuphonyGroup {
 	private at: At;
+	private atcs: At;
 
 	constructor(groupId: number, message: Message) {
 		super(groupId);
 		this.at = new At(message.senderUin, message.senderUid);
+		this.atcs = new At('2854200865', 'u_FY-uEFafkeFr4we_Y7mdEA');
 	}
+
+	
 
 	sendCmd(msg: string) {
 		const messageChain = new MessageChain();
 		messageChain.append(this.at);
+		messageChain.append(new PlainText(msg));
+		this.sendMessage(messageChain);
+	}
+
+	cssendCmd(msg: string) {
+		const messageChain = new MessageChain();
+		messageChain.append(this.atcs);
 		messageChain.append(new PlainText(msg));
 		this.sendMessage(messageChain);
 	}
@@ -35,7 +46,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc", Group> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -60,6 +71,7 @@ class Yunguo extends BaseEvent {
 		this.groups.set("tz", new Group(this.config.tzGroupId, message));
 		// this.groups.set("songhua", new Group(this.config.songhuaGroupId, message));
 		this.groups.set("gc", new Group(this.config.跟车群, message));
+		this.groups.set("傀儡", new Group(Number(this.message.peerUin), message));
 	}
 
 	onRecvActiveMsg() {
@@ -129,6 +141,10 @@ class Yunguo extends BaseEvent {
 				this.on自动跟车();
 			}
 		}
+
+		if (this.config.kuilieFlag&&this.isAtUid&&this.textElementContent&&this.textElementContent!=" "&&this.config.klqxqq.split(',').includes(this.message.senderUin)) {
+			this.傀儡();
+		}
 	}
 
 	// private getGroup()
@@ -195,6 +211,13 @@ class Yunguo extends BaseEvent {
 		);
 	}
 
+	/**是否艾特了我(傀儡) */
+	private get isAtUid() {
+		return (
+			this.textElementAtUid === this.config.klQQ
+		);
+	}
+
 	/** 当前使用物品的人是不是自己 */
 	private get isUseItemSelf() {
 		if (this.markdownElementContent.includes("你使用了")) {
@@ -218,6 +241,18 @@ class Yunguo extends BaseEvent {
 		return find?.textElement.atNtUid;
 	}
 
+	private get textElementAtUid() {
+		const arr = this.message.elements.filter((e) => e.elementType === 1&&e.textElement.atType===2&&e.textElement.atUid===this.config.klQQ);
+		const find = arr.find((e) => e.textElement.atUid);
+		return find?.textElement.atUid;
+	}
+
+	private get textElementContent() {
+		const e1 = this.message.elements.filter((e) => e.elementType === 1&&e.textElement.atType===0&&e.textElement.content!==" ");
+		const find = e1.find((e) => e.textElement.content);
+		return find?.textElement.content;
+	}
+
 	private getNumberValue(value: any) {
 		if (typeof value === "number") {
 			return value;
@@ -235,7 +270,7 @@ class Yunguo extends BaseEvent {
 			const [str1, str2] = this.markdownElementContent.split("加入了组队");
 			const 当前人数 =
 				this.getNumberValue(str2?.match(/当前人数：(\d+)人/)?.[1]) ?? 999;
-			console.log({ str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
+			console.log({qqMsg: this.message.qqMsg, str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
 			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
 			if (当前人数 >= 跟车次序 && !this.isSelfInTheChe) {
 				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
@@ -243,7 +278,11 @@ class Yunguo extends BaseEvent {
 					genCheCmdTemp,
 					gencheCmdTempBase: genCheCmdTemp,
 				});
-				await sleep(this.config.跟车间隔 ?? 3000);
+				if (this.config.跟车间隔) {
+					await sleep(this.config.跟车间隔);
+				  } else {
+					await sleep(3000);
+				  }
 				gc.sendCmd(genCheCmdTemp);
 				return;
 			}
@@ -889,6 +928,19 @@ class Yunguo extends BaseEvent {
 		if (this.isAtSelf) {
 			this.跟车异常处理();
 		}
+	}
+
+	async 傀儡() {
+		const 傀儡 = this.groups.get("傀儡");
+		console.log("傀儡", {
+			qqMsg: this.message.qqMsg,
+			Content: this.textElementContent
+		});
+
+		const kuileiCmdTemp = `${this.textElementContent}`;
+
+		await sleep(1500);
+		傀儡.cssendCmd(kuileiCmdTemp);
 	}
 }
 
