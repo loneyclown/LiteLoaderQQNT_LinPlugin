@@ -78,7 +78,7 @@ class WuxiaEvent extends BaseEvent {
 						}
 					}
 				}
-				console.log(arr);
+				// console.log(arr);
 				const messageChain = new MessageChain();
 			} catch (error) {
 				pluginLog("请求错误:", error, "error");

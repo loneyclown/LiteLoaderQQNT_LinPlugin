@@ -1,12 +1,12 @@
 {
   "name": "linplugin",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "db": "npm run build && npm run deploy-win",
     "build": "electron-vite build",
-    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"D:\\Program Files\\Tencent\\QQNT\\resources\\app\\LiteLoaderQQNT-main\\plugins\\Lin-Plugin\\\"\""
+    "deploy-win": "cmd /c \"xcopy /S /Y dist\\* \"C:\\Users\\zjj\\Documents\\LiteLoaderQQNT\\plugins\\Lin-Plugin\\\"\""
   },
   "author": "",
   "license": "ISC",

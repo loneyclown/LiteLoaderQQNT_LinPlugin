@@ -3,7 +3,7 @@
 		<setting-panel>
 			<setting-list data-direction="column" class="new">
 				<setting-item>
-					<setting-text>当前LinPlugin的版本是 <span>1.2</span></setting-text>
+					<setting-text>当前LinPlugin的版本是 <span>1.5</span></setting-text>
 					<!-- <setting-button data-type="secondary">你先别急</setting-button> -->
 				</setting-item>
 			</setting-list>
@@ -13,16 +13,20 @@
 	<setting-section data-title="云国脚本" class="yunguo">
 		<setting-panel>
 			<setting-list data-direction="column">
-				<setting-item class="yunguo-shuaji">
+				<setting-item>
 					<div class="line-item">
-						<div style="margin-top: 14px" class="row">
+						<div class="row">
 							<setting-text>云国UID: </setting-text>
 							<input key="yunGuoUid" placeholder="请输入你的云国UID" />
 						</div>
 					</div>
 				</setting-item>
+			</setting-list>
+		</setting-panel>
 
-				<setting-item class="yunguo-shuaji">
+		<setting-panel>
+			<setting-list is-collapsible data-direction="column" data-title="刷级">
+				<setting-item>
 					<div class="line-item">
 						<div class="row between">
 							<setting-text class="line-item-title">刷级功能</setting-text>
@@ -46,8 +50,12 @@
 						</div>
 					</div>
 				</setting-item>
+			</setting-list>
+		</setting-panel>
 
-				<setting-item class="yunguo-boss">
+		<setting-panel>
+			<setting-list is-collapsible data-direction="column" data-title="BOSS">
+				<setting-item>
 					<div class="line-item">
 						<div>
 							<div class="row between">
@@ -146,120 +154,140 @@
 						</div>
 					</div>
 				</setting-item>
+			</setting-list>
+		</setting-panel>
 
-				<setting-item class="yunguo-other">
+		<setting-panel>
+			<setting-list is-collapsible data-direction="column" data-title="其他">
+				<setting-item>
 					<div class="line-item">
-						<div>
-							<div class="row between">
-								<setting-text class="line-item-title">其他功能</setting-text>
-							</div>
-							<div class="row">
-								<setting-text data-type="secondary"
-									>持续合成因为没有at信息，为了避免和其他人冲突请单独设置群号。</setting-text
-								>
-							</div>
+						<div class="row">
+							<setting-text>持续合成</setting-text>
+							<setting-switch key="cxhcFlag"></setting-switch>
+							<setting-text style="margin-left: 10px">合成群</setting-text>
+							<input key="cxhcGroupId" placeholder="请输入需要合成的群号" />
 						</div>
-						<div>
-							<div>
-								<div style="margin-top: 14px" class="row">
-									<setting-text>持续合成</setting-text>
-									<setting-switch key="cxhcFlag"></setting-switch>
-									<setting-text style="margin-left: 10px">合成群</setting-text>
-									<input key="cxhcGroupId" placeholder="请输入需要合成的群号" />
-								</div>
-								<div style="margin-top: 4px" class="row">
-									<setting-text>自动合成</setting-text>
-									<setting-switch key="自动合成Flag"></setting-switch>
-									<setting-text data-type="secondary" style="margin-left: 8px"
-										>自动合成装备，直到背包没有了该装备或者剩余合成卡小于配置数值。</setting-text
-									>
-								</div>
-								<div style="margin-top: 4px" class="row">
-									<setting-text>选项: </setting-text>
-									<input
-										key="自动合成_装备id"
-										placeholder="装备id"
-										style="width: 100px"
-									/>
-									<input
-										key="自动合成_胚子"
-										placeholder="胚子"
-										style="width: 200px"
-									/>
-									<input
-										key="自动合成_剩余合成卡"
-										placeholder="剩余合成卡"
-										style="width: 100px"
-									/>
-									<setting-button
-										data-type="secondary"
-										id="重置自动合成背包页码"
-										>重置</setting-button
-									>
-								</div>
-							</div>
-							<div>
-								<div style="margin-top: 14px" class="row">
-									<setting-text>定时指令</setting-text>
-									<setting-switch key="定时指令Flag"></setting-switch>
-									<setting-text data-type="secondary" style="margin-left: 8px"
-										>定时发送指令</setting-text
-									>
-								</div>
-								<div style="margin-top: 4px" class="row">
-									<setting-text>群号: </setting-text>
-									<input
-										key="定时指令群"
-										placeholder="定时指令群号"
-										style="width: 140px"
-									/>
-									<input
-										key="定时指令"
-										placeholder="定时指令"
-										style="width: 200px"
-									/>
-									<input
-										key="定时指令间隔"
-										placeholder="间隔"
-										style="width: 100px"
-									/>
-								</div>
-							</div>
-							<div>
-								<div style="margin-top: 14px" class="row">
-									<setting-text>自定义回执</setting-text>
-									<setting-switch key="自定义回执Flag"></setting-switch>
-									<setting-text data-type="secondary" style="margin-left: 8px"
-										>根据自定义关键词回复指令</setting-text
-									>
-								</div>
-								<div style="margin-top: 4px" class="row">
-									<setting-text>群号: </setting-text>
-									<input
-										key="自定义回执群"
-										placeholder="自定义回执群号"
-										style="width: 140px"
-									/>
-									<input
-										key="自定义回执间隔"
-										placeholder="间隔"
-										style="width: 100px"
-									/>
-								</div>
-								<div style="margin-top: 4px" class="row">
-									<setting-text>选项: </setting-text>
-									<input
-										key="自定义回执回复指令"
-										placeholder="回复指令"
-										style="width: 200px"
-									/>
-									<input
-										key="自定义回执关键词"
-										placeholder="关键词或者正则表达式"
-										style="width: 200px"
-									/>
-								</div>
-							</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>自动合成</setting-text>
+							<setting-switch key="自动合成Flag"></setting-switch>
+							<setting-text data-type="secondary" style="margin-left: 8px"
+								>自动合成装备，直到背包没有了该装备或者剩余合成卡小于配置数值。</setting-text
+							>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>选项: </setting-text>
+							<input
+								key="自动合成_装备id"
+								placeholder="装备id"
+								style="width: 100px"
+							/>
+							<input
+								key="自动合成_胚子"
+								placeholder="胚子"
+								style="width: 200px"
+							/>
+							<input
+								key="自动合成_剩余合成卡"
+								placeholder="剩余合成卡"
+								style="width: 100px"
+							/>
+							<setting-button data-type="secondary" id="重置自动合成背包页码"
+								>重置</setting-button
+							>
+						</div>
+					</div>
+				</setting-item>
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>定时指令</setting-text>
+							<setting-switch key="定时指令Flag"></setting-switch>
+							<setting-text data-type="secondary" style="margin-left: 8px"
+								>定时发送指令</setting-text
+							>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input
+								key="定时指令群"
+								placeholder="定时指令群号"
+								style="width: 140px"
+							/>
+							<input
+								key="定时指令"
+								placeholder="定时指令"
+								style="width: 200px"
+							/>
+							<input
+								key="定时指令间隔"
+								placeholder="间隔"
+								style="width: 100px"
+							/>
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>自定义回执</setting-text>
+							<setting-switch key="自定义回执Flag"></setting-switch>
+							<setting-text data-type="secondary" style="margin-left: 8px"
+								>根据自定义关键词回复指令</setting-text
+							>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input
+								key="自定义回执群"
+								placeholder="自定义回执群号"
+								style="width: 140px"
+							/>
+							<input
+								key="自定义回执间隔"
+								placeholder="间隔"
+								style="width: 100px"
+							/>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>选项: </setting-text>
+							<input
+								key="自定义回执回复指令"
+								placeholder="回复指令"
+								style="width: 200px"
+							/>
+							<input
+								key="自定义回执关键词"
+								placeholder="关键词或者正则表达式"
+								style="width: 200px"
+							/>
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>自动出售</setting-text>
+							<setting-switch key="自动出售_Flag"></setting-switch>
+							<setting-text data-type="secondary" style="margin-left: 8px"
+								>自动出售物品，直到背包没有了该物品。</setting-text
+							>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input key="自动出售_群" placeholder="自动出售群" />
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>选项: </setting-text>
+							<input
+								key="自动出售_物品名称"
+								placeholder="物品名称"
+								style="width: 400px"
+							/>
+							<setting-button data-type="secondary" id="自动出售_重置背包页码"
+								>重置</setting-button
+							>
 						</div>
 					</div>
 				</setting-item>

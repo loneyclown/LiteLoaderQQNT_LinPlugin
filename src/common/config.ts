@@ -65,6 +65,9 @@ export interface ConfigType {
 	跟车群: any;
 	跟车间隔: number;
 	跟车次序: number;
+	自动出售_Flag: boolean;
+	自动出售_群: any;
+	自动出售_物品名称: any;
 }
 
 class Config {
