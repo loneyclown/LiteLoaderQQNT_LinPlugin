@@ -118,6 +118,9 @@ export interface ConfigType {
 	klqxqq: any;
 	/** 傀儡信息敏感词 */
 	klmgc: any;
+	自动出售_Flag: boolean;
+	自动出售_群: any;
+	自动出售_物品名称: any;
 }
 
 class Config {

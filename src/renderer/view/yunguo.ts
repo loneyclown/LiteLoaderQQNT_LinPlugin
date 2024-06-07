@@ -40,6 +40,17 @@ const initYunguoSettingView = async (view: Element) => {
 			await linPluginAPI.setConfig("yunGuoDataCache", newData);
 			alert("重置成功");
 		});
+
+	view
+		.querySelector("#自动出售_重置背包页码")
+		.addEventListener("click", async () => {
+			const newData = {
+				...linPluginAPI.getConfig("yunGuoDataCache"),
+				自动出售_背包页码: 1,
+			};
+			await linPluginAPI.setConfig("yunGuoDataCache", newData);
+			alert("重置成功");
+		});
 };
 
 export default initYunguoSettingView;

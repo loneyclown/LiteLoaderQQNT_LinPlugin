@@ -20,7 +20,7 @@ class Group extends EuphonyGroup {
 	private at: At;
 	private atcs: At;
 
-	constructor(groupId: number, message: Message) {
+	constructor(groupId: any, message: Message) {
 		super(groupId);
 		this.at = new At(message.senderUin, message.senderUid);
 		this.atcs = new At('2854200865', 'u_FY-uEFafkeFr4we_Y7mdEA');
@@ -46,7 +46,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡", Group> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -72,6 +72,7 @@ class Yunguo extends BaseEvent {
 		// this.groups.set("songhua", new Group(this.config.songhuaGroupId, message));
 		this.groups.set("gc", new Group(this.config.跟车群, message));
 		this.groups.set("傀儡", new Group(Number(this.message.peerUin), message));
+		this.groups.set("G自动出售", new Group(this.config.自动出售_群, message));
 	}
 
 	onRecvActiveMsg() {
@@ -139,6 +140,9 @@ class Yunguo extends BaseEvent {
 			// }
 			if (this.config.自动跟车Flag) {
 				this.on自动跟车();
+			}
+			if (this.config.自动出售_Flag) {
+				this.on自动出售();
 			}
 		}
 
@@ -283,7 +287,7 @@ class Yunguo extends BaseEvent {
 			const [str1, str2] = this.markdownElementContent.split("加入了组队");
 			const 当前人数 =
 				this.getNumberValue(str2?.match(/当前人数：(\d+)人/)?.[1]) ?? 999;
-			console.log({qqMsg: this.message.qqMsg, str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
+			// console.log({ str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
 			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
 			if (当前人数 >= 跟车次序 && !this.isSelfInTheChe) {
 				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
@@ -315,8 +319,14 @@ class Yunguo extends BaseEvent {
 			gc.sendCmd("放弃挑战");
 			return;
 		}
+		// 放弃重进
 		if (this.markdownElementContent.includes("你放弃了boss挑战")) {
 			await sleep(1000);
+			gc.sendCmd(this.yunGuoData.gencheCmdTempBase);
+		}
+		// 进队cd
+		if (this.markdownElementContent.match(/请等待(\d+)秒后再次点击加入/)) {
+			await sleep(3000);
 			gc.sendCmd(this.yunGuoData.gencheCmdTempBase);
 		}
 	}
@@ -375,14 +385,14 @@ class Yunguo extends BaseEvent {
 			return;
 		}
 
-		console.log("测试云国合成", {
-			qqMsg: this.message.qqMsg,
-			globalData: this.globalData,
-			isAtSelf: this.isAtSelf,
-			atType: this.atType,
-			textElementAtNtUid: this.textElementAtNtUid,
-			isUseItemSelf: this.isUseItemSelf,
-		});
+		// console.log("测试云国合成", {
+		// 	qqMsg: this.message.qqMsg,
+		// 	globalData: this.globalData,
+		// 	isAtSelf: this.isAtSelf,
+		// 	atType: this.atType,
+		// 	textElementAtNtUid: this.textElementAtNtUid,
+		// 	isUseItemSelf: this.isUseItemSelf,
+		// });
 
 		const hcBtn = this.message.findButton("确定合成");
 		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
@@ -705,14 +715,14 @@ class Yunguo extends BaseEvent {
 			return;
 		}
 
-		console.log("测试云国boss", {
-			qqMsg: this.message.qqMsg,
-			globalData: this.globalData,
-			isAtSelf: this.isAtSelf,
-			atType: this.atType,
-			textElementAtNtUid: this.textElementAtNtUid,
-			isUseItemSelf: this.isUseItemSelf,
-		});
+		// console.log("测试云国boss", {
+		// 	qqMsg: this.message.qqMsg,
+		// 	globalData: this.globalData,
+		// 	isAtSelf: this.isAtSelf,
+		// 	atType: this.atType,
+		// 	textElementAtNtUid: this.textElementAtNtUid,
+		// 	isUseItemSelf: this.isUseItemSelf,
+		// });
 
 		const isSs =
 			this.markdownElementContent.match(/你使用了(\d+)个圣水/) &&
@@ -778,6 +788,71 @@ class Yunguo extends BaseEvent {
 
 				await sleep(3000);
 				boss.sendCmd(tuan ? "团本普攻" : "普攻");
+				return;
+			}
+		}
+	}
+
+	async on自动出售() {
+		if (this.message.peerUid !== this.config.自动出售_群) {
+			return;
+		}
+
+		console.log("测试云国on自动出售", {
+			qqMsg: this.message.qqMsg,
+			globalData: this.globalData,
+			isAtSelf: this.isAtSelf,
+			atType: this.atType,
+			textElementAtNtUid: this.textElementAtNtUid,
+			isUseItemSelf: this.isUseItemSelf,
+		});
+
+		const G自动出售 = this.groups.get("G自动出售");
+		if (this.isAtSelf) {
+			if (this.markdownElementContent.match(/你卖了(.*)，获得了(\d+)金币/)) {
+				const 自动出售Temp_物品id = this.yunGuoData.自动出售Temp_物品id;
+				const page = 自动出售Temp_物品id
+					? Math.floor(自动出售Temp_物品id / 5)
+					: 1;
+				await this.setYunGuoData({ 自动出售Temp_物品id: "" });
+				await sleep(1000);
+				await this.setYunGuoData({ 自动出售_背包页码: page });
+				G自动出售.sendCmd(`背包${page}`);
+				return;
+			}
+
+			const is物品背包 =
+				this.markdownElementContent.includes("背包信息") &&
+				!this.markdownElementContent.includes("圣物");
+			if (is物品背包) {
+				await this.setYunGuoData({
+					自动出售_背包页码: (this.yunGuoData.自动出售_背包页码 ?? 0) + 1,
+				});
+				const regex = /#■ (\d+).(.*)\r/g;
+				const matches = this.markdownElementContent.matchAll(regex);
+				if ([...matches].length === 0) {
+					await this.setYunGuoData({ 自动出售_背包页码: 1 });
+					return;
+				}
+				let 物品_id: any = false;
+				for (const match of this.markdownElementContent.matchAll(regex)) {
+					const [, id, name] = match;
+					const 自动出售_物品名称Arr: string[] =
+						this.config.自动出售_物品名称.split(",");
+					// console.log({ id, name, match });
+					if (自动出售_物品名称Arr.includes(name)) {
+						物品_id = id;
+						break;
+					}
+				}
+				if (物品_id) {
+					await sleep(1000);
+					await this.setYunGuoData({ 自动出售Temp_物品id: 物品_id });
+					G自动出售.sendCmd(`/卖${物品_id}`);
+					return;
+				}
+				await sleep(3000);
+				G自动出售.sendCmd(`背包${this.yunGuoData.自动出售_背包页码}`);
 				return;
 			}
 		}
