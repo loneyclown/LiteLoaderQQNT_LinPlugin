@@ -263,6 +263,19 @@ class Yunguo extends BaseEvent {
 		return 0;
 	}
 
+	//过滤字符
+	private filterChars(input: string, charToFilter: string): string {
+		return input.split('').filter(char => char !== charToFilter).join('');
+	}
+
+	//是否包含敏感词
+	private containsAny(str: string, chars: string): boolean {
+		// 将字符串中的逗号替换为管道符(|)，以创建一个正则表达式
+		const regexStr = chars.replace(/,/g, '|');
+		const regex = new RegExp(regexStr);
+		return regex.test(str);
+	}
+
 	private async 跟车通常处理() {
 		const gc = this.groups.get("gc");
 		// 发现组队信息
@@ -931,16 +944,20 @@ class Yunguo extends BaseEvent {
 	}
 
 	async 傀儡() {
-		const 傀儡 = this.groups.get("傀儡");
-		console.log("傀儡", {
-			qqMsg: this.message.qqMsg,
-			Content: this.textElementContent
-		});
+		const 加 = this.textElementContent.includes("+");
+		if ((加&&!this.config.klmgc)||(加&&this.config.klmgc&&!this.containsAny(this.textElementContent, this.config.klmgc))) {
+			const 傀儡 = this.groups.get("傀儡");
+			const 傀儡信息 = this.filterChars(this.textElementContent, "+");
+			console.log("傀儡", {
+				qqMsg: this.message.qqMsg,
+				Content: 傀儡信息
+			});
 
-		const kuileiCmdTemp = `${this.textElementContent}`;
+			const kuileiCmdTemp = `${傀儡信息}`;
 
-		await sleep(1500);
-		傀儡.cssendCmd(kuileiCmdTemp);
+			await sleep(1500);
+			傀儡.cssendCmd(kuileiCmdTemp);
+		}
 	}
 }
 

@@ -116,6 +116,8 @@ export interface ConfigType {
 	klQQ: any;
 	/** 傀儡权限人QQ */
 	klqxqq: any;
+	/** 傀儡信息敏感词 */
+	klmgc: any;
 }
 
 class Config {
