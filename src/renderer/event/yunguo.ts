@@ -46,7 +46,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售", Group> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -73,6 +73,7 @@ class Yunguo extends BaseEvent {
 		this.groups.set("gc", new Group(this.config.跟车群, message));
 		this.groups.set("傀儡", new Group(Number(this.message.peerUin), message));
 		this.groups.set("G自动出售", new Group(this.config.自动出售_群, message));
+		this.groups.set("G自动分解", new Group(this.config.自动分解_群, message));
 	}
 
 	onRecvActiveMsg() {
@@ -143,6 +144,9 @@ class Yunguo extends BaseEvent {
 			}
 			if (this.config.自动出售_Flag) {
 				this.on自动出售();
+			}
+			if (this.config.自动分解_Flag) {
+				this.on自动分解();
 			}
 		}
 
@@ -394,11 +398,12 @@ class Yunguo extends BaseEvent {
 		// 	isUseItemSelf: this.isUseItemSelf,
 		// });
 
+		const hcks = this.markdownElementContent.includes("请决定是否继续合成");
 		const hcBtn = this.message.findButton("确定合成");
 		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 		const hc = this.groups.get("hc");
 		if (msgUid && msgUid === this.config.yunGuoUid) {
-			if (hcBtn) {
+			if (hcks) {
 				await sleep(1000);
 				await this.setYunGuoData({ hcCmdTemp: hcBtn.data });
 				hc.sendCmd(hcBtn.data);
@@ -1032,6 +1037,68 @@ class Yunguo extends BaseEvent {
 
 			await sleep(1500);
 			傀儡.cssendCmd(kuileiCmdTemp);
+		}
+	}
+
+	async on自动分解() {
+		if (this.message.peerUid !== this.config.自动分解_群) {
+			return;
+		}
+
+		console.log("测试云国on自动分解", {
+			qqMsg: this.message.qqMsg,
+			globalData: this.globalData,
+			isAtSelf: this.isAtSelf,
+			atType: this.atType,
+			textElementAtNtUid: this.textElementAtNtUid,
+			isUseItemSelf: this.isUseItemSelf,
+		});
+
+		const G自动分解 = this.groups.get("G自动分解");
+		if (this.isAtSelf) {
+			if (this.markdownElementContent.match(/你分解了圣物【(.*)】，获得(\d+)个云石/)) {
+				const 自动分解Temp_圣物id = this.yunGuoData.自动分解Temp_圣物id;
+				const page = 自动分解Temp_圣物id
+					? Math.floor(自动分解Temp_圣物id / 5)
+					: 1;
+				await this.setYunGuoData({ 自动分解Temp_圣物id: "" });
+				await sleep(1000);
+				await this.setYunGuoData({ 自动分解_圣物背包页码: page });
+				G自动分解.sendCmd(`圣物背包${page}`);
+				return;
+			}
+
+			const is圣物背包 =
+				this.markdownElementContent.includes("圣物背包信息")
+			if (is圣物背包) {
+				await this.setYunGuoData({
+					自动分解_圣物背包页码: (this.yunGuoData.自动分解_圣物背包页码 ?? 0) + 1,
+				});
+				const regex = /#■ (\d+).(.*)\(lv\.(\d+)\)\r\>主词条\：(.*)\+(((\d+)\.(\d+))|(\d+))/g;
+				const matches = this.markdownElementContent.matchAll(regex);
+				if ([...matches].length === 0) {
+					await this.setYunGuoData({ 自动分解_圣物背包页码: 1 });
+					return;
+				}
+				let 圣物_id: any = false;
+				for (const match of this.markdownElementContent.matchAll(regex)) {
+					const [, id, name, lv, type, bonus] = match;
+					// console.log({ id, name, lv, type, bonus, match });
+					if (Number(bonus) < this.getNumberValue(this.config.自动分解_主词条数值)) {
+						圣物_id = id;
+						break;
+					}
+				}
+				if (圣物_id) {
+					await sleep(1000);
+					await this.setYunGuoData({ 自动分解Temp_圣物id: 圣物_id });
+					G自动分解.sendCmd(`/分解圣物${圣物_id}确定`);
+					return;
+				}
+				await sleep(3000);
+				G自动分解.sendCmd(`圣物背包${this.yunGuoData.自动分解_圣物背包页码}`);
+				return;
+			}
 		}
 	}
 }

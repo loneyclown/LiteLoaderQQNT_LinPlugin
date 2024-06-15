@@ -224,6 +224,11 @@
 							<setting-text style="margin-left: 10px">卡本群</setting-text>
 							<input key="kabenGroupId" placeholder="请输入需要卡本的群号" />
 						</div>
+					</div>
+				</setting-item>
+				
+				<setting-item>
+					<div class="line-item">
 						<div style="margin-top: 14px" class="row">
 							<setting-text>抽卡</setting-text>
 							<setting-switch key="choukaFlag"></setting-switch>
@@ -271,6 +276,26 @@
 							<setting-text>分解群</setting-text>
 							<input key="FJGroupId" placeholder="请输入用来分解圣物的群号" />
 							<input key="FJCmd" placeholder="分解指令,如:分解圣物50确定" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>自动分解圣物</setting-text>
+							<setting-switch key="自动分解_Flag"></setting-switch>
+							<setting-text data-type="secondary"
+								style="margin-left: 8px">自动分解圣物，直到圣物背包没有了低于该主词条数值的圣物。</setting-text>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input key="自动分解_群" placeholder="自动分解群" />
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>选项: </setting-text>
+							<input key="自动分解_主词条数值" placeholder="主词条数值" />
+							<setting-button data-type="secondary" id="自动分解_重置背包页码">重置</setting-button>
 						</div>
 					</div>
 				</setting-item>
