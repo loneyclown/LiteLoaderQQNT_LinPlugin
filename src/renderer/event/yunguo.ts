@@ -398,11 +398,12 @@ class Yunguo extends BaseEvent {
 		// 	isUseItemSelf: this.isUseItemSelf,
 		// });
 
+		const hcks = this.markdownElementContent.includes("请决定是否继续合成");
 		const hcBtn = this.message.findButton("确定合成");
 		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 		const hc = this.groups.get("hc");
 		if (msgUid && msgUid === this.config.yunGuoUid) {
-			if (hcBtn) {
+			if (hcks) {
 				await sleep(1000);
 				await this.setYunGuoData({ hcCmdTemp: hcBtn.data });
 				hc.sendCmd(hcBtn.data);
