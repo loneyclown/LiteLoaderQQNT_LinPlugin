@@ -26,7 +26,7 @@ class Group extends EuphonyGroup {
 		this.atcs = new At('2854200865', 'u_FY-uEFafkeFr4we_Y7mdEA');
 	}
 
-	
+
 
 	sendCmd(msg: string) {
 		const messageChain = new MessageChain();
@@ -46,7 +46,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解", Group> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解" | "fc", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -70,6 +70,7 @@ class Yunguo extends BaseEvent {
 		);
 		this.groups.set("tz", new Group(this.config.tzGroupId, message));
 		// this.groups.set("songhua", new Group(this.config.songhuaGroupId, message));
+		this.groups.set("fc", new Group(this.config.跟车群, message));
 		this.groups.set("gc", new Group(this.config.跟车群, message));
 		this.groups.set("傀儡", new Group(Number(this.message.peerUin), message));
 		this.groups.set("G自动出售", new Group(this.config.自动出售_群, message));
@@ -148,9 +149,12 @@ class Yunguo extends BaseEvent {
 			if (this.config.自动分解_Flag) {
 				this.on自动分解();
 			}
+			if (this.config.autoFaCheFlag) {
+				this.on自动发车();
+			}
 		}
 
-		if (this.config.kuilieFlag&&this.isAtUid&&this.textElementContent&&this.textElementContent!=" "&&this.config.klqxqq.split(',').includes(this.message.senderUin)) {
+		if (this.config.kuilieFlag && this.isAtUid && this.textElementContent && this.textElementContent != " " && this.config.klqxqq.split(',').includes(this.message.senderUin)) {
 			this.傀儡();
 		}
 	}
@@ -250,13 +254,13 @@ class Yunguo extends BaseEvent {
 	}
 
 	private get textElementAtUid() {
-		const arr = this.message.elements.filter((e) => e.elementType === 1&&e.textElement.atType===2&&e.textElement.atUid===this.config.klQQ);
+		const arr = this.message.elements.filter((e) => e.elementType === 1 && e.textElement.atType === 2 && e.textElement.atUid === this.config.klQQ);
 		const find = arr.find((e) => e.textElement.atUid);
 		return find?.textElement.atUid;
 	}
 
 	private get textElementContent() {
-		const e1 = this.message.elements.filter((e) => e.elementType === 1&&e.textElement.atType===0&&e.textElement.content!==" ");
+		const e1 = this.message.elements.filter((e) => e.elementType === 1 && e.textElement.atType === 0 && e.textElement.content !== " ");
 		const find = e1.find((e) => e.textElement.content);
 		return find?.textElement.content;
 	}
@@ -301,9 +305,9 @@ class Yunguo extends BaseEvent {
 				});
 				if (this.config.跟车间隔) {
 					await sleep(this.config.跟车间隔);
-				  } else {
+				} else {
 					await sleep(3000);
-				  }
+				}
 				gc.sendCmd(genCheCmdTemp);
 				return;
 			}
@@ -1023,9 +1027,162 @@ class Yunguo extends BaseEvent {
 		}
 	}
 
+	async on自动发车() {
+		if (this.message.peerUid !== this.config.跟车群) {
+			return;
+		}
+
+		const fc = this.groups.get("fc");
+		const isSk =
+			this.markdownElementContent.match(/你使用了(\d+)个时空跳跃药水/) &&
+			this.isUseItemSelf;
+		// 发起组队
+		if (this.markdownElementContent.includes("发起了组队")) {
+			// 等待发车时间
+			await sleep(this.config.发车时间);
+			const cmd = this.markdownElementContent.includes("公会")
+				? "开始公会组队挑战"
+				: "开始组队挑战";
+			fc.sendCmd(cmd);
+			return;
+		}
+
+		// 此处处理需要艾特自己的消息
+		if (this.isAtSelf) {
+			const isSs =
+				this.markdownElementContent.match(/你使用了(\d+)个圣水/) &&
+				this.isUseItemSelf;
+			const bossXue = this.markdownElementContent.includes("boss血量");
+			const regex = /boss血量：(\d+)\r/;
+			const bossHp = this.markdownElementContent.match(regex)?.[1];
+			const tuan =
+				this.markdownElementContent.includes("团本") &&
+				this.markdownElementContent.includes("血量");
+
+			// 消息包含boss血量或者使用圣水
+			if (bossXue || isSs || tuan) {
+				const hyFlag =
+					this.config.pugongAutoYaoFlag &&
+					this.markdownElementContent.includes("无法继续战斗") &&
+					!this.markdownElementContent.includes("成功复活");
+
+				if (hyFlag) {
+					await sleep(1000);
+					fc.sendCmd(this.config.yaoshuiCmd);
+					return;
+				}
+
+				if (this.markdownElementContent.includes("你们击败了boss")) {
+					if (this.config.diaoShuiAutoFaCheFlag) {
+						let arr = this.markdownElementContent.split("\r\r***\r\r");
+						arr = arr.filter((x) => x.includes("用户:"));
+						let flag1 = false;
+
+						arr.forEach((value) => {
+							if (value.includes("恭喜获得时空跳跃药水")) {
+
+								if (value.includes(this.config.yunGuoUid)) {
+									flag1 = true;
+								}
+							}
+						});
+
+						if (flag1) {
+							await sleep(3e3);
+							fc.sendCmd(this.config.xuCheCmd);
+						}
+
+						if (!flag1) {
+							await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
+							await sleep(1e3);
+							fc.sendCmd(this.config.faCheCmd);
+
+						}
+					} else {
+						if (this.config.xuCheCmd) {
+							await sleep(3e3);
+							fc.sendCmd(this.config.xuCheCmd);
+						} else {
+							await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
+							await sleep(1e3);
+							fc.sendCmd(this.config.faCheCmd);
+						}
+					}
+
+					return;
+				}
+
+				if (isSs) {
+					await sleep(1000);
+					fc.sendCmd(tuan ? "团本普攻" : "普攻");
+					return;
+				}
+
+				if (this.config.fubenSkillFlag) {
+					/** 技能点 */
+					const skillPoints = this.getNumberValue(
+						this.markdownElementContent.match(/技能点：(\d+)\r/)?.[1]
+					);
+					if (
+						skillPoints >= (this.config.fubenPointsRequiredForSkills || 999999)
+					) {
+						await sleep(3000);
+						fc.sendCmd(
+							`${tuan ? "团本技能" : "副本技能"}${this.config.fubenSkillId}`
+						);
+						return;
+					}
+				}
+
+				await sleep(3000);
+				fc.sendCmd(tuan ? "团本普攻" : "普攻");
+				return;
+			}
+
+			if (this.markdownElementContent.match(/你的(金币|花)不足/)) {
+				await linPluginAPI.setConfig("autoFaCheFlag", false);
+				return;
+			}
+
+			// 开始组队挑战
+			if (this.markdownElementContent.includes("开始了组队挑战")) {
+				await this.setYunGuoData({ isInChe: true, isFaCheCD: false });
+				await sleep(3000);
+				fc.sendCmd("普攻");
+				return;
+			}
+
+		}
+
+		const facheCd = this.markdownElementContent.includes("才能发起组队");
+		const seconds = this.markdownElementContent.match(
+			/你还还有(\d+)秒冷却才能发起组队/
+		)?.[1];
+		if (facheCd && seconds) {
+			await sleep(Number(seconds) * 1e3 + 3e3);
+			await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
+			fc.sendCmd(this.config.faCheCmd);
+		}
+
+		if (this.markdownElementContent.includes("你没有发起boss挑战")) {
+			await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
+			await sleep(3e3);
+			fc.sendCmd(this.config.faCheCmd);
+			return;
+		}
+
+		if (isSk) {
+			await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
+			await sleep(2000);
+			fc.sendCmd(this.config.faCheCmd);
+			return;
+		}
+
+	}
+
 	async 傀儡() {
 		const 加 = this.textElementContent.includes("+");
-		if ((加&&!this.config.klmgc)||(加&&this.config.klmgc&&!this.containsAny(this.textElementContent, this.config.klmgc))) {
+		if ((加 && !this.config.klmgc) || (加 && this.config.klmgc && !this.containsAny(this.textElementContent, this.config.klmgc))) {
 			const 傀儡 = this.groups.get("傀儡");
 			const 傀儡信息 = this.filterChars(this.textElementContent, "+");
 			console.log("傀儡", {
@@ -1034,9 +1191,21 @@ class Yunguo extends BaseEvent {
 			});
 
 			const kuileiCmdTemp = `${傀儡信息}`;
+			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
 
 			await sleep(1500);
-			傀儡.cssendCmd(kuileiCmdTemp);
+			if (kuileiCmdTemp.includes("车头")) {
+				if (kuileiCmdTemp.includes("关闭车头")) {
+					await linPluginAPI.setConfig("autoFaCheFlag", false);
+					await linPluginAPI.setConfig("自动跟车Flag", true);
+					傀儡.cssendCmd(`已关闭车头，上车次序为 ${跟车次序}`);
+				}
+			}else if(kuileiCmdTemp.includes("配置")){
+				傀儡.cssendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序},跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
+			} else {
+				傀儡.cssendCmd(kuileiCmdTemp);
+			}
+
 		}
 	}
 
