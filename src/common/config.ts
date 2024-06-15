@@ -93,11 +93,11 @@ export interface ConfigType {
 	自动合成_装备id: any;
 	自动合成_胚子: any;
 	自动合成_剩余合成卡: number;
-	/** 分解圣物 */
+	/** 自动挑战 */
 	tzFlag: boolean;
-	/** 分解群号 */
+	/** 挑战群号 */
 	tzGroupId: any;
-	/** 分解指令 */
+	/** 挑战指令 */
 	tzCmd: any;
 	/** 送花 */
 	// songhuaFlag: boolean;
@@ -121,6 +121,9 @@ export interface ConfigType {
 	自动出售_Flag: boolean;
 	自动出售_群: any;
 	自动出售_物品名称: any;
+	自动分解_Flag: boolean;
+	自动分解_群: any;
+	自动分解_主词条数值: number;
 }
 
 class Config {
