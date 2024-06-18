@@ -56,12 +56,12 @@ const init = async () => {
 				const message = new Message(msgList);
 
 				if (message.qqMsg && message.qqMsg.senderUin === "2189396527") {
-					const arr = message.elements.filter((e) => e.elementType === 1);
-					const find = arr.find((e) => e.textElement.content === "锵锵！");
-					if (find) {
-						const group = new Group(message.qqMsg.peerUin);
-						group.sendMessage(new PlainText("锵锵！"));
-					}
+					const msg = message.elements.find((e) => e.elementType === 1);
+					// const find = arr.find((e) => e.textElement.content === "锵锵！");
+					// if (find) {
+					const group = new Group(message.qqMsg.peerUin);
+					group.sendMessage(new PlainText(msg.textElement.content));
+					// }
 				}
 
 				const yunguo = new Yunguo(message);
