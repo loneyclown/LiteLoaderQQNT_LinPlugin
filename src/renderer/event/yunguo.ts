@@ -12,17 +12,32 @@ import Message from "./message";
 const linPluginAPI = window.linPluginAPI;
 const pluginLog = linPluginAPI.pluginLog;
 
+// 全局变量
+var fenjiejishu = 0;
+var songhuajishu = 0;
+
 class Group extends EuphonyGroup {
 	private at: At;
+	private atcs: At;
 
 	constructor(groupId: any, message: Message) {
 		super(groupId);
 		this.at = new At(message.senderUin, message.senderUid);
+		this.atcs = new At('2854200865', 'u_FY-uEFafkeFr4we_Y7mdEA');
 	}
+
+	
 
 	sendCmd(msg: string) {
 		const messageChain = new MessageChain();
 		messageChain.append(this.at);
+		messageChain.append(new PlainText(msg));
+		this.sendMessage(messageChain);
+	}
+
+	cssendCmd(msg: string) {
+		const messageChain = new MessageChain();
+		messageChain.append(this.atcs);
 		messageChain.append(new PlainText(msg));
 		this.sendMessage(messageChain);
 	}
@@ -31,17 +46,7 @@ class Group extends EuphonyGroup {
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<
-		| "sj"
-		| "boss"
-		| "che"
-		| "hc"
-		| "G定时指令"
-		| "G自定义回执"
-		| "gc"
-		| "G自动出售",
-		Group
-	> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -51,13 +56,24 @@ class Yunguo extends BaseEvent {
 		this.groups.set("boss", new Group(this.config.puGongGroupId, message));
 		this.groups.set("che", new Group(this.config.cheGroupId, message));
 		this.groups.set("hc", new Group(this.config.cxhcGroupId, message));
+		this.groups.set("kb", new Group(this.config.kabenGroupId, message));
+		this.groups.set("ck", new Group(this.config.choukaGroupId, message));
+		this.groups.set("hs", new Group(this.config.choukaGroupId, message));
+		this.groups.set("gl", new Group(this.config.gonglouGroupId, message));
+		this.groups.set("lc", new Group(this.config.LCGroupId, message));
+		this.groups.set("fj", new Group(this.config.FJGroupId, message));
+		this.groups.set("sc", new Group(this.config.HUAQIANGroupId, message));
 		this.groups.set("G定时指令", new Group(this.config.定时指令群, message));
 		this.groups.set(
 			"G自定义回执",
 			new Group(this.config.自定义回执群, message)
 		);
+		this.groups.set("tz", new Group(this.config.tzGroupId, message));
+		// this.groups.set("songhua", new Group(this.config.songhuaGroupId, message));
 		this.groups.set("gc", new Group(this.config.跟车群, message));
+		this.groups.set("傀儡", new Group(Number(this.message.peerUin), message));
 		this.groups.set("G自动出售", new Group(this.config.自动出售_群, message));
+		this.groups.set("G自动分解", new Group(this.config.自动分解_群, message));
 	}
 
 	onRecvActiveMsg() {
@@ -69,6 +85,27 @@ class Yunguo extends BaseEvent {
 			if (this.config.cxhcFlag || this.config.自动合成Flag) {
 				this.on合成();
 			}
+			if (this.config.kabenFlag) {
+				this.onKaben();
+			}
+			if (this.config.choukaFlag || this.config.hsFlag) {
+				this.onChouka();
+			}
+			// if (this.config.hsFlag) {
+			// 	this.onHeshui();
+			// }
+			if (this.config.gonglouFlag) {
+				this.onGonglou();
+			}
+			if (this.config.LCFlag) {
+				this.onLingchong();
+			}
+			if (this.config.FJFlag) {
+				this.onFenjie();
+			}
+			if (this.config.HUAQIANFlag) {
+				this.onSancai();
+			}
 			if (this.config.bossFlag) {
 				this.onBoss();
 			}
@@ -78,14 +115,62 @@ class Yunguo extends BaseEvent {
 			if (this.config.自定义回执Flag) {
 				this.on自定义回执();
 			}
+			if (this.config.自动合成Flag) {
+			}
+			if (this.config.tzFlag) {
+				this.onTiaozhan();
+			}
+			// if (this.config.songhuaFlag) {
+			// 	this.onSonghua();
+			// }
+			// if (this.message.peerUin === this.config.shuajiGroupId) {
+			// 	this.onShuaji();
+			// 	return;
+			// }
+			// if (this.message.peerUid === this.config.cxhcGroupId) {
+			// 	this.onCxhc();
+			// 	return;
+			// }
+			// if (this.message.peerUid === this.config.puGongGroupId) {
+			// 	this.onBoss();
+			// 	// return;
+			// }
+			// if (this.message.peerUid === this.config.cheGroupId) {
+			// 	this.onChe();
+			// 	// return;
+			// }
 			if (this.config.自动跟车Flag) {
 				this.on自动跟车();
 			}
 			if (this.config.自动出售_Flag) {
 				this.on自动出售();
 			}
+			if (this.config.自动分解_Flag) {
+				this.on自动分解();
+			}
+		}
+
+		if (this.config.kuilieFlag&&this.isAtUid&&this.textElementContent&&this.textElementContent!=" "&&this.config.klqxqq.split(',').includes(this.message.senderUin)) {
+			this.傀儡();
 		}
 	}
+
+	// private getGroup()
+
+	// private sendCmd(group: Group, msg: string) {
+	// 	const at = new At(this.message.senderUin, this.message.senderUid);
+	// 	this.sendGroupMessage(group, ` ${msg}`, at);
+	// }
+
+	// private sendShuajiCmd(msg: string) {
+	// 	this.sendCmd(new Group(this.config.shuajiGroupId), msg);
+	// }
+	// private sendBossCmd(msg: string) {
+	// 	this.sendCmd(new Group(this.config.puGongGroupId), msg);
+	// }
+	// private sendCheCmd(msg: string) {
+	// 	this.sendCmd(new Group(this.config.cheGroupId), msg);
+	// }
 
 	private async setYunGuoData(data) {
 		const newData = { ...this.yunGuoData, ...data };
@@ -134,6 +219,13 @@ class Yunguo extends BaseEvent {
 		);
 	}
 
+	/**是否艾特了我(傀儡) */
+	private get isAtUid() {
+		return (
+			this.textElementAtUid === this.config.klQQ
+		);
+	}
+
 	/** 当前使用物品的人是不是自己 */
 	private get isUseItemSelf() {
 		if (this.markdownElementContent.includes("你使用了")) {
@@ -157,6 +249,18 @@ class Yunguo extends BaseEvent {
 		return find?.textElement.atNtUid;
 	}
 
+	private get textElementAtUid() {
+		const arr = this.message.elements.filter((e) => e.elementType === 1&&e.textElement.atType===2&&e.textElement.atUid===this.config.klQQ);
+		const find = arr.find((e) => e.textElement.atUid);
+		return find?.textElement.atUid;
+	}
+
+	private get textElementContent() {
+		const e1 = this.message.elements.filter((e) => e.elementType === 1&&e.textElement.atType===0&&e.textElement.content!==" ");
+		const find = e1.find((e) => e.textElement.content);
+		return find?.textElement.content;
+	}
+
 	private getNumberValue(value: any) {
 		if (typeof value === "number") {
 			return value;
@@ -165,6 +269,19 @@ class Yunguo extends BaseEvent {
 			return Number(value);
 		}
 		return 0;
+	}
+
+	//过滤字符
+	private filterChars(input: string, charToFilter: string): string {
+		return input.split('').filter(char => char !== charToFilter).join('');
+	}
+
+	//是否包含敏感词
+	private containsAny(str: string, chars: string): boolean {
+		// 将字符串中的逗号替换为管道符(|)，以创建一个正则表达式
+		const regexStr = chars.replace(/,/g, '|');
+		const regex = new RegExp(regexStr);
+		return regex.test(str);
 	}
 
 	private async 跟车通常处理() {
@@ -182,7 +299,11 @@ class Yunguo extends BaseEvent {
 					genCheCmdTemp,
 					gencheCmdTempBase: genCheCmdTemp,
 				});
-				await sleep(this.config.跟车间隔 ?? 3000);
+				if (this.config.跟车间隔) {
+					await sleep(this.config.跟车间隔);
+				  } else {
+					await sleep(3000);
+				  }
 				gc.sendCmd(genCheCmdTemp);
 				return;
 			}
@@ -277,11 +398,12 @@ class Yunguo extends BaseEvent {
 		// 	isUseItemSelf: this.isUseItemSelf,
 		// });
 
+		const hcks = this.markdownElementContent.includes("请决定是否继续合成");
 		const hcBtn = this.message.findButton("确定合成");
 		const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 		const hc = this.groups.get("hc");
 		if (msgUid && msgUid === this.config.yunGuoUid) {
-			if (hcBtn) {
+			if (hcks) {
 				await sleep(1000);
 				await this.setYunGuoData({ hcCmdTemp: hcBtn.data });
 				hc.sendCmd(hcBtn.data);
@@ -348,6 +470,250 @@ class Yunguo extends BaseEvent {
 			hc.sendCmd(this.yunGuoData.hcCmdTemp);
 		}
 	}
+
+	/** 卡本 */
+	async onKaben() {
+		const kb = this.groups.get("kb");
+		if (this.isAtSelf && this.message.peerUid === this.config.kabenGroupId) {
+
+			await sleep(2e3 + Math.random() * 1e3); //给这个sleep加个1秒以内的随机延迟，避免刷屏
+			if (this.markdownElementContent.includes("无法继续战斗") && !this.markdownElementContent.includes("成功复活")) {
+				kb.sendCmd(this.config.yaoshuiCmd);
+				await sleep(3 * 1e3 + Math.random() * 1e3);
+				kb.sendCmd("普攻");
+			} else {
+				kb.sendCmd("普攻");
+			}
+			return;
+		}
+	}
+
+	/** 持续抽卡 */
+	async onChouka() {
+		if (this.message.peerUid !== this.config.choukaGroupId) {
+			return;
+		}
+		if (this.config.choukaFlag) {
+			const choukaFalg = this.markdownElementContent.includes("恭喜你抽中");
+			const CK_stopFalg = this.markdownElementContent.includes("你今日不足");
+			const TIANFANGFalg = this.markdownElementContent.includes("恭喜你抽中天方·");
+			const ckBtn = this.message.findButton("公会十连");
+			const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+			const ck = this.groups.get("ck");
+			if (msgUid && msgUid === this.config.yunGuoUid) {
+				if (ckBtn) {
+					await sleep(10 * 1e3);
+					await this.setYunGuoData({ ckCmdTemp: ckBtn.data });
+					ck.sendCmd(ckBtn.data);
+					return;
+				}
+
+				if (TIANFANGFalg) {
+					await sleep(1e3);
+					ck.sendCmd("#####一级提示内容：你他吗出天方了#####");
+				}
+
+				if (CK_stopFalg) {
+					await sleep(1e3);
+					ck.sendCmd("抽卡停止");
+					return;
+				}
+			}
+		}
+		if (this.config.hsFlag) {
+			const hs = this.groups.get("hs");
+			const hscmd = this.config.hscmd;
+			const hsTx = /你使用了(\d+)个初级/;
+			const hsTag = this.markdownElementContent.match(hsTx);
+
+			const hsn = /药水(:|：)(\d+)个/;
+			const hsNTag = this.markdownElementContent.match(hsn);
+			const hsnumber = parseInt(hsTag[1], 10);
+			const hsshengyunumber = parseInt(hsNTag?.[2], 10);
+
+			const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+
+			if (hsTag && hsshengyunumber >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
+				await sleep(1e3);
+				hs.sendCmd(hscmd);
+			}
+		}
+	}
+
+	/**喝水 */
+	// async onHeshui() {
+	// 	const hs = this.groups.get("hs");
+	// 	const hscmd = this.config.hscmd;
+	// 	const hsTx = /你使用了(\d+)个初级/;
+	// 	const hsTag = this.markdownElementContent.match(hsTx);
+
+	// 	const hsn = /药水(:|：)(\d+)个/;
+	// 	const hsNTag = this.markdownElementContent.match(hsn);
+	// 	// const hsnumber = parseInt(hsTag[1], 10);
+	// 	// const hsshengyunumber = parseInt(hsNTag?.[2], 10);
+	// 	const hsshengyunumber = this.markdownElementContent.match(hsn)?.[2];
+
+	// 	const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
+
+	// 	if (hsTag && Number(hsshengyunumber) >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
+	// 		await sleep(1e3);
+	// 		hs.sendCmd(hscmd);
+	// 	}
+	// }
+
+	/**灵宠 */
+	async onLingchong() {
+		const lc = this.groups.get("lc");
+		const backFlag = this.markdownElementContent.includes("回来了");
+		const KongxianFlag = this.markdownElementContent.includes("空闲");
+		const zhuangtai = /还有(\d+)秒可以召回/;
+		const ZHsecond = this.markdownElementContent.match(zhuangtai)?.[1];
+
+
+		if (this.isAtSelf) {
+
+			if (KongxianFlag) {
+				lc.sendCmd("派遣挖云石60");
+				await sleep(60 * 60 * 1e3);
+				lc.sendCmd("召回灵宠");
+
+			}
+
+			if (backFlag) {
+				lc.sendCmd("派遣挖云石60");
+				await sleep(60 * 60 * 1e3);
+				lc.sendCmd("召回灵宠");
+
+			}
+
+			if (ZHsecond) {
+				if (parseInt(ZHsecond, 10) > 0) {
+					await sleep(Number(ZHsecond) * 1e3);
+					lc.sendCmd("召回灵宠");
+				}
+			}
+		}
+	}
+
+	/** 持续攻楼 */
+	async onGonglou() {
+		const gl = this.groups.get("gl");
+		if (this.message.peerUid !== this.config.gonglouGroupId) {
+			return;
+		}
+		const upstairsFlag = this.markdownElementContent.includes("攻占信息");
+		const defeatFlag = this.markdownElementContent.includes("你击败了");
+		const dengdingFlag = this.markdownElementContent.match("你已暂时到达顶层");
+
+		if (this.isAtSelf) {
+			if (upstairsFlag && !defeatFlag) {
+				gl.sendCmd(this.config.yaoshuiCmd);
+				await sleep(60 * 1e3 + 2e3);
+				gl.sendCmd("/确定攻占");
+			}
+
+			if (defeatFlag) {
+				await sleep(60 * 1e3 + 2e3);
+				gl.sendCmd("/确定攻占");
+			}
+
+			if (dengdingFlag) {
+				gl.sendCmd("你度过万难险阻终登上顶峰!");
+			}
+		}
+	}
+
+	/**分解 */
+	async onFenjie() {
+		if (this.isAtSelf && this.message.peerUid === this.config.FJGroupId) {
+			const fj = this.groups.get("fj");
+			const fenjie = this.markdownElementContent.includes("分解了圣物");
+			const swmeile = this.markdownElementContent.includes("rror");
+			const FJCmd = this.config.FJCmd;
+
+
+			if (fenjie) {
+				await sleep(2e3);
+				fj.sendCmd(FJCmd);
+				fenjiejishu += 1;
+			}
+
+			if (swmeile) {
+				await sleep(2e3);
+				fj.sendCmd(`分解完毕，从本次启动开始总共分解次数：${fenjiejishu}`);
+			}
+		}
+
+	}
+
+	/**散财童子 */
+	async onSancai() {
+		const sc = this.groups.get("sc");
+		if (this.isAtSelf && this.message.peerUid === this.config.HUAQIANGroupId) {
+			const GOUMAIFalg = this.markdownElementContent.includes("你购买了");
+			const gold = this.markdownElementContent.match(/剩余(:|：)(\d+)/)?.[2];
+
+			if (GOUMAIFalg && Number(gold) > 200000000) {
+				sc.sendCmd("购买9 2");
+			} else {
+				await sleep(60 * 60 * 1e3);
+				sc.sendCmd("购买5 5");
+			}
+		}
+	}
+
+	/**开始-放弃挑战 */
+	async onTiaozhan() {
+		if (this.isAtSelf && this.message.peerUid === this.config.tzGroupId) {
+			const tz = this.groups.get("tz");
+			const xinxiFalg = this.markdownElementContent.includes("战斗信息");
+			const tzCmd = this.config.tzCmd;
+
+			await sleep(2e3);
+			if (!xinxiFalg) {
+				tz.sendCmd(tzCmd);
+			} else {
+				tz.sendCmd("放弃挑战");
+			}
+		}
+	}
+
+	/**送花 */
+	// async onSonghua() {
+	// 	if (this.isAtSelf && this.message.peerUid === this.config.songhuaGroupId) {
+	// 		const songhua = this.groups.get("songhua");
+	// 		const song = this.markdownElementContent.includes("送了5000朵花");
+	// 		const flower = this.markdownElementContent.match(/剩余鲜花(:|：)(\d+)/)?.[2];
+	// 		let songhuaksCmd = this.config.songhuaksCmd;
+	// 		// const songhuajsCmd = this.config.songhuajsCmd;
+
+	// 		await sleep(2e3);
+	// 		if (songhuajishu <= 0) {
+	// 			await this.setYunGuoData({ songhuaCmdTemp: songhuaksCmd });
+	// 		}
+	// 		if (!song) {
+	// 			songhuaksCmd = this.yunGuoData.songhuaCmdTemp += 1;
+	// 			await this.setYunGuoData({ songhuaCmdTemp: songhuaksCmd });
+	// 			songhua.sendCmd(`送花${this.yunGuoData.songhuaCmdTemp} 5000`);
+	// 			songhuaksCmd += 1;
+	// 			songhuajishu += 1;
+	// 			await this.setYunGuoData({ songhuaCmdTemp: songhuaksCmd });
+	// 			return;
+	// 		}
+	// 		if (Number(flower) > 200000) {
+	// 			songhua.sendCmd(`送花${this.yunGuoData.songhuaCmdTemp} 5000`);
+	// 			songhuajishu += 1;
+	// 			songhuaksCmd = this.yunGuoData.songhuaCmdTemp += 1;
+	// 			await this.setYunGuoData({ songhuaCmdTemp: songhuaksCmd });
+	// 			return;
+	// 		} else {
+	// 			await sleep(2e3);
+	// 			await this.setYunGuoData({ songhuaCmdTemp: "" });
+	// 			songhua.sendCmd(`送花结束,送花人数：${songhuajishu}`);
+	// 			return;
+	// 		}
+	// 	}
+	// }
 
 	async onBoss() {
 		if (this.message.peerUid !== this.config.puGongGroupId) {
@@ -654,6 +1020,85 @@ class Yunguo extends BaseEvent {
 		// 此处处理需要艾特自己的消息
 		if (this.isAtSelf) {
 			this.跟车异常处理();
+		}
+	}
+
+	async 傀儡() {
+		const 加 = this.textElementContent.includes("+");
+		if ((加&&!this.config.klmgc)||(加&&this.config.klmgc&&!this.containsAny(this.textElementContent, this.config.klmgc))) {
+			const 傀儡 = this.groups.get("傀儡");
+			const 傀儡信息 = this.filterChars(this.textElementContent, "+");
+			console.log("傀儡", {
+				qqMsg: this.message.qqMsg,
+				Content: 傀儡信息
+			});
+
+			const kuileiCmdTemp = `${傀儡信息}`;
+
+			await sleep(1500);
+			傀儡.cssendCmd(kuileiCmdTemp);
+		}
+	}
+
+	async on自动分解() {
+		if (this.message.peerUid !== this.config.自动分解_群) {
+			return;
+		}
+
+		console.log("测试云国on自动分解", {
+			qqMsg: this.message.qqMsg,
+			globalData: this.globalData,
+			isAtSelf: this.isAtSelf,
+			atType: this.atType,
+			textElementAtNtUid: this.textElementAtNtUid,
+			isUseItemSelf: this.isUseItemSelf,
+		});
+
+		const G自动分解 = this.groups.get("G自动分解");
+		if (this.isAtSelf) {
+			if (this.markdownElementContent.match(/你分解了圣物【(.*)】，获得(\d+)个云石/)) {
+				const 自动分解Temp_圣物id = this.yunGuoData.自动分解Temp_圣物id;
+				const page = 自动分解Temp_圣物id
+					? Math.floor(自动分解Temp_圣物id / 5)
+					: 1;
+				await this.setYunGuoData({ 自动分解Temp_圣物id: "" });
+				await sleep(1000);
+				await this.setYunGuoData({ 自动分解_圣物背包页码: page });
+				G自动分解.sendCmd(`圣物背包${page}`);
+				return;
+			}
+
+			const is圣物背包 =
+				this.markdownElementContent.includes("圣物背包信息")
+			if (is圣物背包) {
+				await this.setYunGuoData({
+					自动分解_圣物背包页码: (this.yunGuoData.自动分解_圣物背包页码 ?? 0) + 1,
+				});
+				const regex = /#■ (\d+).(.*)\(lv\.(\d+)\)\r\>主词条\：(.*)\+(((\d+)\.(\d+))|(\d+))/g;
+				const matches = this.markdownElementContent.matchAll(regex);
+				if ([...matches].length === 0) {
+					await this.setYunGuoData({ 自动分解_圣物背包页码: 1 });
+					return;
+				}
+				let 圣物_id: any = false;
+				for (const match of this.markdownElementContent.matchAll(regex)) {
+					const [, id, name, lv, type, bonus] = match;
+					// console.log({ id, name, lv, type, bonus, match });
+					if (Number(bonus) < this.getNumberValue(this.config.自动分解_主词条数值)) {
+						圣物_id = id;
+						break;
+					}
+				}
+				if (圣物_id) {
+					await sleep(1000);
+					await this.setYunGuoData({ 自动分解Temp_圣物id: 圣物_id });
+					G自动分解.sendCmd(`/分解圣物${圣物_id}确定`);
+					return;
+				}
+				await sleep(3000);
+				G自动分解.sendCmd(`圣物背包${this.yunGuoData.自动分解_圣物背包页码}`);
+				return;
+			}
 		}
 	}
 }

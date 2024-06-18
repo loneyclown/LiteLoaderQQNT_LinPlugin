@@ -33,14 +33,10 @@
 							<setting-switch key="shuajiFlag"></setting-switch>
 						</div>
 						<div class="row between">
-							<setting-text data-type="secondary"
-								>实现自动游历和自动战斗。</setting-text
-							>
+							<setting-text data-type="secondary">实现自动游历和自动战斗。</setting-text>
 						</div>
 						<div class="row between">
-							<setting-text data-type="secondary"
-								>设置好需要刷级的群号，然后打开开关，在设定好的群内手动发送一次简单游历即可。</setting-text
-							>
+							<setting-text data-type="secondary">设置好需要刷级的群号，然后打开开关，在设定好的群内手动发送一次简单游历即可。</setting-text>
 						</div>
 						<div style="margin-top: 14px" class="row">
 							<setting-text>刷级群: </setting-text>
@@ -63,14 +59,10 @@
 								<setting-switch key="bossFlag"></setting-switch>
 							</div>
 							<div class="row">
-								<setting-text data-type="secondary"
-									>实现自动普攻和吃药，可以设置定时挑战某个BOSS。</setting-text
-								>
+								<setting-text data-type="secondary">实现自动普攻和吃药，可以设置定时挑战某个BOSS。</setting-text>
 							</div>
 							<div class="row">
-								<setting-text data-type="secondary"
-									>设置好普攻群号和相关配置，然后去设置好的群里普攻一下。</setting-text
-								>
+								<setting-text data-type="secondary">设置好普攻群号和相关配置，然后去设置好的群里普攻一下。</setting-text>
 							</div>
 						</div>
 
@@ -85,10 +77,7 @@
 								<setting-text>使用技能: </setting-text>
 								<setting-switch key="fubenSkillFlag"></setting-switch>
 								<input key="fubenSkillId" placeholder="副本技能ID" />
-								<input
-									key="fubenPointsRequiredForSkills"
-									placeholder="副本技能所需点数"
-								/>
+								<input key="fubenPointsRequiredForSkills" placeholder="副本技能所需点数" />
 							</div>
 						</div>
 
@@ -100,9 +89,7 @@
 							<div style="margin-top: 4px" class="row">
 								<setting-text>药水指令: </setting-text>
 								<input key="yaoshuiCmd" placeholder="请输入药水指令" />
-								<setting-text data-type="secondary"
-									>设定喝药水的指令比如：/使用1 1</setting-text
-								>
+								<setting-text data-type="secondary">设定喝药水的指令比如：/使用1 1</setting-text>
 							</div>
 						</div>
 
@@ -114,9 +101,7 @@
 							<div style="margin-top: 4px" class="row">
 								<setting-text>发车指令: </setting-text>
 								<input key="faCheCmd" placeholder="请输入发车指令" />
-								<setting-text data-type="secondary"
-									>例: 发起公会组队4确定</setting-text
-								>
+								<setting-text data-type="secondary">例: 发起公会组队4确定</setting-text>
 							</div>
 							<div style="margin-top: 4px" class="row">
 								<setting-text>掉水自动续车</setting-text>
@@ -140,16 +125,8 @@
 							</div>
 							<div style="margin-top: 4px" class="row">
 								<setting-text>选项: </setting-text>
-								<input
-									key="跟车间隔"
-									placeholder="跟车间隔"
-									style="width: 100px"
-								/>
-								<input
-									key="跟车次序"
-									placeholder="跟车次序"
-									style="width: 100px"
-								/>
+								<input key="跟车间隔" placeholder="跟车间隔" style="width: 100px" />
+								<input key="跟车次序" placeholder="跟车次序" style="width: 100px" />
 							</div>
 						</div>
 					</div>
@@ -170,59 +147,31 @@
 						<div style="margin-top: 4px" class="row">
 							<setting-text>自动合成</setting-text>
 							<setting-switch key="自动合成Flag"></setting-switch>
-							<setting-text data-type="secondary" style="margin-left: 8px"
-								>自动合成装备，直到背包没有了该装备或者剩余合成卡小于配置数值。</setting-text
-							>
+							<setting-text data-type="secondary"
+								style="margin-left: 8px">自动合成装备，直到背包没有了该装备或者剩余合成卡小于配置数值。</setting-text>
 						</div>
 						<div style="margin-top: 4px" class="row">
 							<setting-text>选项: </setting-text>
-							<input
-								key="自动合成_装备id"
-								placeholder="装备id"
-								style="width: 100px"
-							/>
-							<input
-								key="自动合成_胚子"
-								placeholder="胚子"
-								style="width: 200px"
-							/>
-							<input
-								key="自动合成_剩余合成卡"
-								placeholder="剩余合成卡"
-								style="width: 100px"
-							/>
-							<setting-button data-type="secondary" id="重置自动合成背包页码"
-								>重置</setting-button
-							>
+							<input key="自动合成_装备id" placeholder="装备id" style="width: 100px" />
+							<input key="自动合成_胚子" placeholder="胚子" style="width: 200px" />
+							<input key="自动合成_剩余合成卡" placeholder="剩余合成卡" style="width: 100px" />
+							<setting-button data-type="secondary" id="重置自动合成背包页码">重置</setting-button>
 						</div>
 					</div>
 				</setting-item>
+
 				<setting-item>
 					<div class="line-item">
 						<div class="row">
 							<setting-text>定时指令</setting-text>
 							<setting-switch key="定时指令Flag"></setting-switch>
-							<setting-text data-type="secondary" style="margin-left: 8px"
-								>定时发送指令</setting-text
-							>
+							<setting-text data-type="secondary" style="margin-left: 8px">定时发送指令</setting-text>
 						</div>
 						<div style="margin-top: 4px" class="row">
 							<setting-text>群号: </setting-text>
-							<input
-								key="定时指令群"
-								placeholder="定时指令群号"
-								style="width: 140px"
-							/>
-							<input
-								key="定时指令"
-								placeholder="定时指令"
-								style="width: 200px"
-							/>
-							<input
-								key="定时指令间隔"
-								placeholder="间隔"
-								style="width: 100px"
-							/>
+							<input key="定时指令群" placeholder="定时指令群号" style="width: 140px" />
+							<input key="定时指令" placeholder="定时指令" style="width: 200px" />
+							<input key="定时指令间隔" placeholder="间隔" style="width: 100px" />
 						</div>
 					</div>
 				</setting-item>
@@ -232,35 +181,17 @@
 						<div class="row">
 							<setting-text>自定义回执</setting-text>
 							<setting-switch key="自定义回执Flag"></setting-switch>
-							<setting-text data-type="secondary" style="margin-left: 8px"
-								>根据自定义关键词回复指令</setting-text
-							>
+							<setting-text data-type="secondary" style="margin-left: 8px">根据自定义关键词回复指令</setting-text>
 						</div>
 						<div style="margin-top: 4px" class="row">
 							<setting-text>群号: </setting-text>
-							<input
-								key="自定义回执群"
-								placeholder="自定义回执群号"
-								style="width: 140px"
-							/>
-							<input
-								key="自定义回执间隔"
-								placeholder="间隔"
-								style="width: 100px"
-							/>
+							<input key="自定义回执群" placeholder="自定义回执群号" style="width: 140px" />
+							<input key="自定义回执间隔" placeholder="间隔" style="width: 100px" />
 						</div>
 						<div style="margin-top: 4px" class="row">
 							<setting-text>选项: </setting-text>
-							<input
-								key="自定义回执回复指令"
-								placeholder="回复指令"
-								style="width: 200px"
-							/>
-							<input
-								key="自定义回执关键词"
-								placeholder="关键词或者正则表达式"
-								style="width: 200px"
-							/>
+							<input key="自定义回执回复指令" placeholder="回复指令" style="width: 200px" />
+							<input key="自定义回执关键词" placeholder="关键词或者正则表达式" style="width: 200px" />
 						</div>
 					</div>
 				</setting-item>
@@ -270,9 +201,8 @@
 						<div class="row">
 							<setting-text>自动出售</setting-text>
 							<setting-switch key="自动出售_Flag"></setting-switch>
-							<setting-text data-type="secondary" style="margin-left: 8px"
-								>自动出售物品，直到背包没有了该物品。</setting-text
-							>
+							<setting-text data-type="secondary"
+								style="margin-left: 8px">自动出售物品，直到背包没有了该物品。</setting-text>
 						</div>
 						<div style="margin-top: 4px" class="row">
 							<setting-text>群号: </setting-text>
@@ -280,17 +210,157 @@
 						</div>
 						<div style="margin-top: 4px" class="row">
 							<setting-text>选项: </setting-text>
-							<input
-								key="自动出售_物品名称"
-								placeholder="物品名称"
-								style="width: 400px"
-							/>
-							<setting-button data-type="secondary" id="自动出售_重置背包页码"
-								>重置</setting-button
-							>
+							<input key="自动出售_物品名称" placeholder="物品名称" style="width: 400px" />
+							<setting-button data-type="secondary" id="自动出售_重置背包页码">重置</setting-button>
 						</div>
 					</div>
 				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>特殊普攻</setting-text>
+							<setting-switch key="kabenFlag"></setting-switch>
+							<setting-text style="margin-left: 10px">卡本群</setting-text>
+							<input key="kabenGroupId" placeholder="请输入需要卡本的群号" />
+						</div>
+					</div>
+				</setting-item>
+				
+				<setting-item>
+					<div class="line-item">
+						<div style="margin-top: 14px" class="row">
+							<setting-text>抽卡</setting-text>
+							<setting-switch key="choukaFlag"></setting-switch>
+							<setting-text style="margin-left: 10px">喝水</setting-text>
+							<setting-switch key="hsFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 14px;" class="row">
+							<setting-text>抽卡、喝水群</setting-text>
+							<input key="choukaGroupId" placeholder="请输入需要抽卡的群号" />
+							<input key="hscmd" placeholder="神奇药指令,如:使用10" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>攻楼</setting-text>
+							<setting-switch key="gonglouFlag"></setting-switch>
+							<setting-text style="margin-left: 10px">攻楼群</setting-text>
+							<input key="gonglouGroupId" placeholder="请输入需要攻楼的群号" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>灵宠</setting-text>
+							<setting-switch key="LCFlag"></setting-switch>
+							<setting-text style="margin-left: 10px">灵宠群</setting-text>
+							<input key="LCGroupId" placeholder="请输入用来派遣灵宠的群号" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>分解圣物</setting-text>
+							<setting-switch key="FJFlag"></setting-switch>
+							<setting-text style="margin-left: 10px" data-type="secondary">触发指令：分解圣物***确定</setting-text>
+						</div>
+						<div style="margin-top: 14px;" class="row">
+							<setting-text>分解群</setting-text>
+							<input key="FJGroupId" placeholder="请输入用来分解圣物的群号" />
+							<input key="FJCmd" placeholder="分解指令,如:分解圣物50确定" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>自动分解圣物</setting-text>
+							<setting-switch key="自动分解_Flag"></setting-switch>
+							<setting-text data-type="secondary"
+								style="margin-left: 8px">自动分解圣物，直到圣物背包没有了低于该主词条数值的圣物。</setting-text>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input key="自动分解_群" placeholder="自动分解群" />
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>选项: </setting-text>
+							<input key="自动分解_主词条数值" placeholder="主词条数值" />
+							<setting-button data-type="secondary" id="自动分解_重置背包页码">重置</setting-button>
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>散财童子</setting-text>
+							<setting-switch key="HUAQIANFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 14px" class="row">
+							<setting-text>散财群</setting-text>
+							<input key="HUAQIANGroupId" placeholder="请输入用来撒币的群号" />
+							<setting-text data-type="secondary">购买狗药,这个尽量单独搞个群，避免冲突</setting-text>
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>开始/放弃挑战</setting-text>
+							<setting-switch key="tzFlag"></setting-switch>
+						</div>
+						<div style="margin-top: 14px" class="row">
+							<setting-text>挑战群</setting-text>
+							<input key="tzGroupId" placeholder="请输入挑战的群号" />
+							<input key="tzCmd" placeholder="副本名称,如:确定挑战副本17" />
+						</div>
+					</div>
+				</setting-item>
+
+				<setting-item>
+					<div class="line-item">
+						<div style="margin-top: 14px" class="row">
+							<setting-text>傀儡开关</setting-text>
+							<setting-switch key="kuilieFlag"></setting-switch>
+							<setting-text style="margin-left: 10px">傀儡QQ</setting-text>
+							<input key="klQQ" placeholder="请输入傀儡QQ" />
+						</div>
+						<div style="margin-top: 14px" class="row">
+							<setting-text>傀儡权限人QQ("英文逗号分割"=>",")</setting-text>
+							<input key="klqxqq" placeholder="请输入傀儡权限人QQ" />
+						</div>
+						<div style="margin-top: 14px" class="row">
+							<setting-text>傀儡信息敏感词("英文逗号分割"=>",")</setting-text>
+							<input key="klmgc" placeholder="请输入傀儡信息敏感词" />
+						</div>
+					</div>
+				</setting-item>
+
+				<!-- <setting-item>
+							<div class="line-item">
+								<div style="margin-top: 14px" class="row">
+									<setting-text>送花</setting-text>
+									<setting-switch key="songhuaFlag"></setting-switch>
+									<setting-text style="margin-left: 10px">送花群</setting-text>
+									<input key="songhuaGroupId" placeholder="请输入送花的群号" />
+								</div>
+								<div style="margin-top: 14px" class="row">
+									<input key="songhuaksCmd" placeholder="开始送花用户ID,如:1" />
+									<input key="songhuajsCmd" placeholder="结束送花用户ID,如:10000" />
+								</div>
+							</div>
+						</setting-item> -->
 			</setting-list>
 		</setting-panel>
 	</setting-section>

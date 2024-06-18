@@ -28,6 +28,7 @@ export interface ConfigType {
 	autoFaCheFlag: any;
 	/** 发车命令 */
 	faCheCmd: any;
+	/** 是否自动跟车 */
 	自动跟车Flag: any;
 	/** 车群 */
 	cheGroupId: any;
@@ -49,6 +50,36 @@ export interface ConfigType {
 	fubenSkillId: any;
 	/** 副本技能所需点数 */
 	fubenPointsRequiredForSkills: any;
+	/** 是否持续卡本 */
+	kabenFlag: any;
+	/** 卡本群号 */
+	kabenGroupId: any;
+	/** 是否持续抽卡 */
+	choukaFlag: boolean;
+	/** 是否持续喝水 */
+	hsFlag: boolean;
+	/** 喝神奇水命令 */
+	hscmd: any;
+	/** 持续抽卡/喝水群号 */
+	choukaGroupId: any;
+	/** 是否持续攻楼 */
+	gonglouFlag: boolean;
+	/** 持续攻楼群号 */
+	gonglouGroupId: any;
+	/** 灵宠 */
+	LCFlag: boolean;
+	/** 灵宠群号 */
+	LCGroupId: any;
+	/** 分解圣物 */
+	FJFlag: boolean;
+	/** 分解群号 */
+	FJGroupId: any;
+	/** 分解指令 */
+	FJCmd: any;
+	/** 散财 */
+	HUAQIANFlag: boolean;
+	/** 散财群号 */
+	HUAQIANGroupId: any;
 	定时指令Flag: boolean;
 	定时指令群: any;
 	定时指令间隔: number;
@@ -62,12 +93,37 @@ export interface ConfigType {
 	自动合成_装备id: any;
 	自动合成_胚子: any;
 	自动合成_剩余合成卡: number;
+	/** 自动挑战 */
+	tzFlag: boolean;
+	/** 挑战群号 */
+	tzGroupId: any;
+	/** 挑战指令 */
+	tzCmd: any;
+	/** 送花 */
+	// songhuaFlag: boolean;
+	/** 送花群号 */
+	// songhuaGroupId: any;
+	/** 开始送花ID */
+	// songhuaksCmd: any;
+	/** 结束送花ID */
+	// songhuajsCmd: any;
 	跟车群: any;
 	跟车间隔: number;
 	跟车次序: number;
+	/** 傀儡开关 */
+	kuilieFlag: any;
+	/** 傀儡QQ */
+	klQQ: any;
+	/** 傀儡权限人QQ */
+	klqxqq: any;
+	/** 傀儡信息敏感词 */
+	klmgc: any;
 	自动出售_Flag: boolean;
 	自动出售_群: any;
 	自动出售_物品名称: any;
+	自动分解_Flag: boolean;
+	自动分解_群: any;
+	自动分解_主词条数值: number;
 }
 
 class Config {
