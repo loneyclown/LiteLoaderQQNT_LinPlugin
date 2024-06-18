@@ -1191,17 +1191,25 @@ class Yunguo extends BaseEvent {
 			});
 
 			const kuileiCmdTemp = `${傀儡信息}`;
-			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
+			const 跟车次序 = this.getNumberValue(this.config.跟车次序);
 
 			await sleep(1500);
-			if (kuileiCmdTemp.includes("车头")) {
+			if (kuileiCmdTemp.match(/去(\d+)/)) {
+				const 跟车次序修改 = this.getNumberValue(kuileiCmdTemp.match(/去(\d+)/)?.[1]);
+				await linPluginAPI.setConfig("跟车次序", 跟车次序修改);
+				傀儡.sendCmd(`当前上车次序为 ${跟车次序修改}(带车头),若需要更改请发送"去xx"`);
+			} else if (kuileiCmdTemp.includes("车头")) {
 				if (kuileiCmdTemp.includes("关闭车头")) {
 					await linPluginAPI.setConfig("autoFaCheFlag", false);
 					await linPluginAPI.setConfig("自动跟车Flag", true);
-					傀儡.cssendCmd(`已关闭车头，上车次序为 ${跟车次序}`);
+					傀儡.sendCmd(` 已关闭车头，上车次序为 ${跟车次序}(带车头)`);
+				} else {
+					await linPluginAPI.setConfig("autoFaCheFlag", true);
+					await linPluginAPI.setConfig("自动跟车Flag", false);
+					傀儡.sendCmd(" 已成为车头，立刻续车，请注意关闭其他车头");
 				}
-			}else if(kuileiCmdTemp.includes("配置")){
-				傀儡.cssendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序},跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
+			} else if (kuileiCmdTemp.includes("配置")) {
+				傀儡.sendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序}(带车头),跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
 			} else {
 				傀儡.cssendCmd(kuileiCmdTemp);
 			}
