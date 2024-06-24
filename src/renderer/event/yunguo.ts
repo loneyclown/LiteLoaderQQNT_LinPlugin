@@ -275,17 +275,27 @@ class Yunguo extends BaseEvent {
 		return 0;
 	}
 
-	//过滤字符
+	/**过滤字符*/
 	private filterChars(input: string, charToFilter: string): string {
 		return input.split('').filter(char => char !== charToFilter).join('');
 	}
 
-	//是否包含敏感词
+	/**是否包含敏感词*/
 	private containsAny(str: string, chars: string): boolean {
 		// 将字符串中的逗号替换为管道符(|)，以创建一个正则表达式
 		const regexStr = chars.replace(/,/g, '|');
 		const regex = new RegExp(regexStr);
 		return regex.test(str);
+	}
+
+	/**除法是否除尽,除不尽就加一*/
+	private divideAndRoundUp(dividend: number, divisor: number): number {
+		const result = dividend / divisor;
+		if (result % 1 !== 0) {
+			return Math.floor(result) + 1;
+		} else {
+			return result;
+		}
 	}
 
 	private async 跟车通常处理() {
@@ -415,7 +425,7 @@ class Yunguo extends BaseEvent {
 			}
 			if (this.markdownElementContent.includes("合成成功")) {
 				const page = this.yunGuoData.hcCmdTemp
-					? Math.floor(this.yunGuoData.hcCmdTemp.split(":")[1] / 5)
+					? this.divideAndRoundUp(this.yunGuoData.hcCmdTemp.split(":")[1] , 5)
 					: 1;
 				await this.setYunGuoData({ hcCmdTemp: "" });
 				const 合成卡_num = this.getNumberValue(
@@ -821,7 +831,7 @@ class Yunguo extends BaseEvent {
 			if (this.markdownElementContent.match(/你卖了(.*)，获得了(\d+)金币/)) {
 				const 自动出售Temp_物品id = this.yunGuoData.自动出售Temp_物品id;
 				const page = 自动出售Temp_物品id
-					? Math.floor(自动出售Temp_物品id / 5)
+					? this.divideAndRoundUp(自动出售Temp_物品id , 5)
 					: 1;
 				await this.setYunGuoData({ 自动出售Temp_物品id: "" });
 				await sleep(1000);
@@ -1236,7 +1246,7 @@ class Yunguo extends BaseEvent {
 			if (this.markdownElementContent.match(/你分解了圣物【(.*)】，获得(\d+)个云石/)) {
 				const 自动分解Temp_圣物id = this.yunGuoData.自动分解Temp_圣物id;
 				const page = 自动分解Temp_圣物id
-					? Math.floor(自动分解Temp_圣物id / 5)
+					? this.divideAndRoundUp(自动分解Temp_圣物id, 5)
 					: 1;
 				await this.setYunGuoData({ 自动分解Temp_圣物id: "" });
 				await sleep(1000);
