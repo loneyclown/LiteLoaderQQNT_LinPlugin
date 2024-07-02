@@ -307,7 +307,7 @@ class Yunguo extends BaseEvent {
 				this.getNumberValue(str2?.match(/当前人数：(\d+)人/)?.[1]) ?? 999;
 			// console.log({ str1, str2, 当前人数, 跟车间隔: this.config.跟车间隔 });
 			const 跟车次序 = this.getNumberValue(this.config.跟车次序) - 1;
-			if (当前人数 >= 跟车次序 && !this.isSelfInTheChe) {
+			if ((当前人数 >= 跟车次序 || 跟车次序 === 1) && !this.isSelfInTheChe) {
 				const genCheCmdTemp = `${this.genCheBtn.data}确定`;
 				await this.setYunGuoData({
 					genCheCmdTemp,
@@ -817,14 +817,14 @@ class Yunguo extends BaseEvent {
 			return;
 		}
 
-		console.log("测试云国on自动出售", {
-			qqMsg: this.message.qqMsg,
-			globalData: this.globalData,
-			isAtSelf: this.isAtSelf,
-			atType: this.atType,
-			textElementAtNtUid: this.textElementAtNtUid,
-			isUseItemSelf: this.isUseItemSelf,
-		});
+		// console.log("测试云国on自动出售", {
+		// 	qqMsg: this.message.qqMsg,
+		// 	globalData: this.globalData,
+		// 	isAtSelf: this.isAtSelf,
+		// 	atType: this.atType,
+		// 	textElementAtNtUid: this.textElementAtNtUid,
+		// 	isUseItemSelf: this.isUseItemSelf,
+		// });
 
 		const G自动出售 = this.groups.get("G自动出售");
 		if (this.isAtSelf) {
@@ -1207,16 +1207,21 @@ class Yunguo extends BaseEvent {
 			if (kuileiCmdTemp.match(/去(\d+)/)) {
 				const 跟车次序修改 = this.getNumberValue(kuileiCmdTemp.match(/去(\d+)/)?.[1]);
 				await linPluginAPI.setConfig("跟车次序", 跟车次序修改);
-				傀儡.sendCmd(`当前上车次序为 ${跟车次序修改}(带车头),若需要更改请发送"去xx"`);
+				傀儡.sendCmd(`当前上车次序为 ${跟车次序修改}(带头),若需要更改请发送"去xx"`);
 			} else if (kuileiCmdTemp.includes("车头")) {
 				if (kuileiCmdTemp.includes("关闭车头")) {
 					await linPluginAPI.setConfig("autoFaCheFlag", false);
 					await linPluginAPI.setConfig("自动跟车Flag", true);
-					傀儡.sendCmd(` 已关闭车头，上车次序为 ${跟车次序}(带车头)`);
+					傀儡.sendCmd(` 已关闭头，上车次序为 ${跟车次序}(带头)`);
 				} else {
 					await linPluginAPI.setConfig("autoFaCheFlag", true);
 					await linPluginAPI.setConfig("自动跟车Flag", false);
-					傀儡.sendCmd(" 已成为车头，立刻续车，请注意关闭其他车头");
+					傀儡.sendCmd(" 已成为头，立刻续车，请注意关闭其他头");
+				}
+			} else if (kuileiCmdTemp.includes("跟车")) {
+				if (kuileiCmdTemp.includes("关闭跟车")) {
+					await linPluginAPI.setConfig("自动跟车Flag", false);
+					傀儡.sendCmd(` 已关闭跟车`);
 				}
 			} else if (kuileiCmdTemp.includes("配置")) {
 				傀儡.sendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序}(带车头),跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
@@ -1227,23 +1232,86 @@ class Yunguo extends BaseEvent {
 		}
 	}
 
+	// async on自动分解() {
+	// 	if (this.message.peerUid !== this.config.自动分解_群) {
+	// 		return;
+	// 	}
+
+	// 	// console.log("测试云国on自动分解", {
+	// 	// 	qqMsg: this.message.qqMsg,
+	// 	// 	globalData: this.globalData,
+	// 	// 	isAtSelf: this.isAtSelf,
+	// 	// 	atType: this.atType,
+	// 	// 	textElementAtNtUid: this.textElementAtNtUid,
+	// 	// 	isUseItemSelf: this.isUseItemSelf,
+	// 	// });
+
+	// 	const G自动分解 = this.groups.get("G自动分解");
+	// 	if (this.isAtSelf) {
+	// 		if (this.markdownElementContent.match(/你分解了圣物【(.*)】，获得(\d+)个云石/)) {
+	// 			const 自动分解Temp_圣物id = this.yunGuoData.自动分解Temp_圣物id;
+	// 			const page = 自动分解Temp_圣物id
+	// 				? this.divideAndRoundUp(自动分解Temp_圣物id, 5)
+	// 				: 1;
+	// 			await this.setYunGuoData({ 自动分解Temp_圣物id: "" });
+	// 			await sleep(1000);
+	// 			await this.setYunGuoData({ 自动分解_圣物背包页码: page });
+	// 			G自动分解.sendCmd(`圣物背包${page}`);
+	// 			return;
+	// 		}
+
+	// 		const is圣物背包 =
+	// 			this.markdownElementContent.includes("圣物背包信息")
+	// 		if (is圣物背包) {
+	// 			await this.setYunGuoData({
+	// 				自动分解_圣物背包页码: (this.yunGuoData.自动分解_圣物背包页码 ?? 0) + 1,
+	// 			});
+	// 			const regex = /#■ (\d+).(.*)\(lv\.(\d+)\)\r\>主词条\：(.*)\+(((\d+)\.(\d+))|(\d+))/g;
+	// 			const matches = this.markdownElementContent.matchAll(regex);
+	// 			if ([...matches].length === 0) {
+	// 				await this.setYunGuoData({ 自动分解_圣物背包页码: 1 });
+	// 				return;
+	// 			}
+	// 			let 圣物_id: any = false;
+	// 			for (const match of this.markdownElementContent.matchAll(regex)) {
+	// 				const [, id, name, lv, type, bonus] = match;
+	// 				// console.log({ id, name, lv, type, bonus, match });
+	// 				if (Number(bonus) < this.getNumberValue(this.config.自动分解_主词条数值)) {
+	// 					圣物_id = id;
+	// 					break;
+	// 				}
+	// 			}
+	// 			if (圣物_id) {
+	// 				await sleep(1000);
+	// 				await this.setYunGuoData({ 自动分解Temp_圣物id: 圣物_id });
+	// 				G自动分解.sendCmd(`/分解圣物${圣物_id}确定`);
+	// 				return;
+	// 			}
+	// 			await sleep(3000);
+	// 			G自动分解.sendCmd(`圣物背包${this.yunGuoData.自动分解_圣物背包页码}`);
+	// 			return;
+	// 		}
+	// 	}
+	// }
+
 	async on自动分解() {
 		if (this.message.peerUid !== this.config.自动分解_群) {
 			return;
 		}
 
-		console.log("测试云国on自动分解", {
-			qqMsg: this.message.qqMsg,
-			globalData: this.globalData,
-			isAtSelf: this.isAtSelf,
-			atType: this.atType,
-			textElementAtNtUid: this.textElementAtNtUid,
-			isUseItemSelf: this.isUseItemSelf,
-		});
+		// console.log("测试云国on自动分解", {
+		// 	qqMsg: this.message.qqMsg,
+		// 	globalData: this.globalData,
+		// 	isAtSelf: this.isAtSelf,
+		// 	atType: this.atType,
+		// 	textElementAtNtUid: this.textElementAtNtUid,
+		// 	isUseItemSelf: this.isUseItemSelf,
+		// });
 
 		const G自动分解 = this.groups.get("G自动分解");
 		if (this.isAtSelf) {
-			if (this.markdownElementContent.match(/你分解了圣物【(.*)】，获得(\d+)个云石/)) {
+			// if (this.markdownElementContent.match(/你分解了圣物【(.*)】，获得(\d+)个云石/)) {
+			if (this.markdownElementContent.includes("圣物上限等级由自身")) {
 				const 自动分解Temp_圣物id = this.yunGuoData.自动分解Temp_圣物id;
 				const page = 自动分解Temp_圣物id
 					? this.divideAndRoundUp(自动分解Temp_圣物id, 5)
@@ -1271,7 +1339,7 @@ class Yunguo extends BaseEvent {
 				for (const match of this.markdownElementContent.matchAll(regex)) {
 					const [, id, name, lv, type, bonus] = match;
 					// console.log({ id, name, lv, type, bonus, match });
-					if (Number(bonus) < this.getNumberValue(this.config.自动分解_主词条数值)) {
+					if (Number(bonus) >= this.getNumberValue(this.config.自动分解_主词条数值)&&Number(lv)<this.getNumberValue(2)) {
 						圣物_id = id;
 						break;
 					}
@@ -1279,7 +1347,7 @@ class Yunguo extends BaseEvent {
 				if (圣物_id) {
 					await sleep(1000);
 					await this.setYunGuoData({ 自动分解Temp_圣物id: 圣物_id });
-					G自动分解.sendCmd(`/分解圣物${圣物_id}确定`);
+					G自动分解.sendCmd(`升级圣物${圣物_id}`);
 					return;
 				}
 				await sleep(3000);
