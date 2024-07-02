@@ -106,11 +106,17 @@
 							<div style="margin-top: 4px" class="row">
 								<setting-text>掉水自动续车</setting-text>
 								<setting-switch key="diaoShuiAutoFaCheFlag"></setting-switch>
+								<setting-text data-type="secondary">开启时检测是否掉落药水,不开启时使用药水指令直接发车</setting-text>
 							</div>
 							<div style="margin-top: 4px" class="row">
-								<setting-text>续车指令: </setting-text>
+								<setting-text>续车药水指令: </setting-text>
 								<input key="xuCheCmd" placeholder="请输入续车指令" />
 								<setting-text data-type="secondary">例: 使用4</setting-text>
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>发车时间</setting-text>
+								<input key="发车时间" placeholder="请输入发车时间" />
+								<setting-text data-type="secondary">单位:毫秒</setting-text>
 							</div>
 						</div>
 
@@ -121,7 +127,7 @@
 							</div>
 							<div style="margin-top: 4px" class="row">
 								<setting-text>跟车群: </setting-text>
-								<input key="跟车群" placeholder="请输入需要跟车的群号" />
+								<input key="跟车群" placeholder="请输入需要跟/发车的群号" />
 							</div>
 							<div style="margin-top: 4px" class="row">
 								<setting-text>选项: </setting-text>
