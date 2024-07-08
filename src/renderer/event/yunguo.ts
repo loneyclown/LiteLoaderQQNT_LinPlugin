@@ -23,10 +23,8 @@ class Group extends EuphonyGroup {
 	constructor(groupId: any, message: Message) {
 		super(groupId);
 		this.at = new At(message.senderUin, message.senderUid);
-		this.atcs = new At('2854200865', 'u_FY-uEFafkeFr4we_Y7mdEA');
+		this.atcs = new At("2854200865", "u_FY-uEFafkeFr4we_Y7mdEA");
 	}
-
-
 
 	sendCmd(msg: string) {
 		const messageChain = new MessageChain();
@@ -57,13 +55,36 @@ class Group extends EuphonyGroup {
 
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
-	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解" | "fc" | "打怪" | "闭关" | "其他", Group> = new Map();
+	private groups: Map<
+		| "sj"
+		| "boss"
+		| "che"
+		| "hc"
+		| "G定时指令"
+		| "G自定义回执"
+		| "kb"
+		| "ck"
+		| "hs"
+		| "gl"
+		| "lc"
+		| "fj"
+		| "sc"
+		| "tz"
+		| "songhua"
+		| "gc"
+		| "傀儡"
+		| "G自动出售"
+		| "G自动分解"
+		| "fc"
+		| "打怪"
+		| "闭关"
+		| "其他",
+		Group
+	> = new Map();
 
 	constructor(message: Message) {
 		super(message);
 		this.config = linPluginAPI.getConfigAll() as ConfigType;
-		this.globalData = linPluginAPI.getGlobalData();
 		this.groups.set("sj", new Group(this.config.shuajiGroupId, message));
 		this.groups.set("boss", new Group(this.config.puGongGroupId, message));
 		this.groups.set("che", new Group(this.config.cheGroupId, message));
@@ -175,11 +196,24 @@ class Yunguo extends BaseEvent {
 			}
 		}
 
-		if (this.config.kuilieFlag && this.isAtUid && this.textElementContent && this.textElementContent != " " && this.config.klqxqq.split(',').includes(this.message.senderUin)) {
+		if (
+			this.config.klqxqq &&
+			this.config.kuilieFlag &&
+			this.isAtUid &&
+			this.textElementContent &&
+			this.textElementContent != " " &&
+			this.config.klqxqq.split(",").includes(this.message.senderUin)
+		) {
 			this.傀儡();
 		}
 
-		if (this.isAtUid && this.textElementContent && this.textElementContent != " " && this.config.监控人ID.includes(this.message.senderUin)) {
+		if (
+			this.isAtUid &&
+			this.textElementContent &&
+			this.textElementContent != " " &&
+			this.config.监控人ID &&
+			this.config.监控人ID.includes(this.message.senderUin)
+		) {
 			this.其他();
 		}
 	}
@@ -210,12 +244,6 @@ class Yunguo extends BaseEvent {
 		return linPluginAPI.getConfig("yunGuoDataCache");
 	}
 
-	private get markdownElementContent() {
-		const e14 = this.message.elements.filter((e) => e.elementType === 14);
-		const { markdownElement } = e14?.[0];
-		return markdownElement?.content;
-	}
-
 	/** 跟车按钮 */
 	private get genCheBtn() {
 		const addBtn = this.message.findButton("加入公会组队")
@@ -239,20 +267,9 @@ class Yunguo extends BaseEvent {
 		return false;
 	}
 
-	/** 草神bot 是否艾特的是当前用户 */
-	private get isAtSelf() {
-		return (
-			this.markdownElementContent.includes(
-				`at_tinyid=${this.globalData.selfUin}`
-			) || this.textElementAtNtUid === this.globalData.selfUid
-		);
-	}
-
 	/**是否艾特了我(傀儡) */
 	private get isAtUid() {
-		return (
-			this.textElementAtUid === this.config.klQQ
-		);
+		return this.textElementAtUid === this.config.klQQ;
 	}
 
 	/** 当前使用物品的人是不是自己 */
@@ -268,26 +285,15 @@ class Yunguo extends BaseEvent {
 		return false;
 	}
 
-	private get atType() {
-		return this.message.qqMsg.atType;
-	}
-
-	private get textElementAtNtUid() {
-		const arr = this.message.elements.filter((e) => e.elementType === 1);
-		const find = arr.find((e) => e.textElement.atNtUid);
-		return find?.textElement.atNtUid;
-	}
-
 	private get textElementAtUid() {
-		const arr = this.message.elements.filter((e) => e.elementType === 1 && e.textElement.atType === 2 && e.textElement.atUid === this.config.klQQ);
+		const arr = this.message.elements.filter(
+			(e) =>
+				e.elementType === 1 &&
+				e.textElement.atType === 2 &&
+				e.textElement.atUid === this.config.klQQ
+		);
 		const find = arr.find((e) => e.textElement.atUid);
 		return find?.textElement.atUid;
-	}
-
-	private get textElementContent() {
-		const e1 = this.message.elements.filter((e) => e.elementType === 1 && e.textElement.atType === 0 && e.textElement.content !== " ");
-		const find = e1.find((e) => e.textElement.content);
-		return find?.textElement.content;
 	}
 
 	private getNumberValue(value: any) {
@@ -302,13 +308,16 @@ class Yunguo extends BaseEvent {
 
 	/**过滤字符*/
 	private filterChars(input: string, charToFilter: string): string {
-		return input.split('').filter(char => char !== charToFilter).join('');
+		return input
+			.split("")
+			.filter((char) => char !== charToFilter)
+			.join("");
 	}
 
 	/**是否包含敏感词*/
 	private containsAny(str: string, chars: string): boolean {
 		// 将字符串中的逗号替换为管道符(|)，以创建一个正则表达式
-		const regexStr = chars.replace(/,/g, '|');
+		const regexStr = chars.replace(/,/g, "|");
 		const regex = new RegExp(regexStr);
 		return regex.test(str);
 	}
@@ -450,7 +459,7 @@ class Yunguo extends BaseEvent {
 			}
 			if (this.markdownElementContent.includes("合成成功")) {
 				const page = this.yunGuoData.hcCmdTemp
-					? this.divideAndRoundUp(this.yunGuoData.hcCmdTemp.split(":")[1] , 5)
+					? this.divideAndRoundUp(this.yunGuoData.hcCmdTemp.split(":")[1], 5)
 					: 1;
 				await this.setYunGuoData({ hcCmdTemp: "" });
 				const 合成卡_num = this.getNumberValue(
@@ -514,9 +523,11 @@ class Yunguo extends BaseEvent {
 	async onKaben() {
 		const kb = this.groups.get("kb");
 		if (this.isAtSelf && this.message.peerUid === this.config.kabenGroupId) {
-
 			await sleep(2e3 + Math.random() * 1e3); //给这个sleep加个1秒以内的随机延迟，避免刷屏
-			if (this.markdownElementContent.includes("无法继续战斗") && !this.markdownElementContent.includes("成功复活")) {
+			if (
+				this.markdownElementContent.includes("无法继续战斗") &&
+				!this.markdownElementContent.includes("成功复活")
+			) {
 				kb.sendCmd(this.config.yaoshuiCmd);
 				await sleep(3 * 1e3 + Math.random() * 1e3);
 				kb.sendCmd("普攻");
@@ -535,7 +546,8 @@ class Yunguo extends BaseEvent {
 		if (this.config.choukaFlag) {
 			const choukaFalg = this.markdownElementContent.includes("恭喜你抽中");
 			const CK_stopFalg = this.markdownElementContent.includes("你今日不足");
-			const TIANFANGFalg = this.markdownElementContent.includes("恭喜你抽中天方·");
+			const TIANFANGFalg =
+				this.markdownElementContent.includes("恭喜你抽中天方·");
 			const ckBtn = this.message.findButton("公会十连");
 			const msgUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 			const ck = this.groups.get("ck");
@@ -572,7 +584,12 @@ class Yunguo extends BaseEvent {
 
 			const hsUid = this.markdownElementContent.match(/用户(:|：)(\d+)/)?.[2];
 
-			if (hsTag && hsshengyunumber >= 2 && hsUid && hsUid === this.config.yunGuoUid) {
+			if (
+				hsTag &&
+				hsshengyunumber >= 2 &&
+				hsUid &&
+				hsUid === this.config.yunGuoUid
+			) {
 				await sleep(1e3);
 				hs.sendCmd(hscmd);
 			}
@@ -608,21 +625,17 @@ class Yunguo extends BaseEvent {
 		const zhuangtai = /还有(\d+)秒可以召回/;
 		const ZHsecond = this.markdownElementContent.match(zhuangtai)?.[1];
 
-
 		if (this.isAtSelf) {
-
 			if (KongxianFlag) {
 				lc.sendCmd("派遣挖云石60");
 				await sleep(60 * 60 * 1e3);
 				lc.sendCmd("召回灵宠");
-
 			}
 
 			if (backFlag) {
 				lc.sendCmd("派遣挖云石60");
 				await sleep(60 * 60 * 1e3);
 				lc.sendCmd("召回灵宠");
-
 			}
 
 			if (ZHsecond) {
@@ -670,7 +683,6 @@ class Yunguo extends BaseEvent {
 			const swmeile = this.markdownElementContent.includes("rror");
 			const FJCmd = this.config.FJCmd;
 
-
 			if (fenjie) {
 				await sleep(2e3);
 				fj.sendCmd(FJCmd);
@@ -682,7 +694,6 @@ class Yunguo extends BaseEvent {
 				fj.sendCmd(`分解完毕，从本次启动开始总共分解次数：${fenjiejishu}`);
 			}
 		}
-
 	}
 
 	/**散财童子 */
@@ -856,7 +867,7 @@ class Yunguo extends BaseEvent {
 			if (this.markdownElementContent.match(/你卖了(.*)，获得了(\d+)金币/)) {
 				const 自动出售Temp_物品id = this.yunGuoData.自动出售Temp_物品id;
 				const page = 自动出售Temp_物品id
-					? this.divideAndRoundUp(自动出售Temp_物品id , 5)
+					? this.divideAndRoundUp(自动出售Temp_物品id, 5)
 					: 1;
 				await this.setYunGuoData({ 自动出售Temp_物品id: "" });
 				await sleep(1000);
@@ -1115,7 +1126,6 @@ class Yunguo extends BaseEvent {
 
 						arr.forEach((value) => {
 							if (value.includes("恭喜获得时空跳跃药水")) {
-
 								if (value.includes(this.config.yunGuoUid)) {
 									flag1 = true;
 								}
@@ -1131,7 +1141,6 @@ class Yunguo extends BaseEvent {
 							await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
 							await sleep(1e3);
 							fc.sendCmd(this.config.faCheCmd);
-
 						}
 					} else {
 						if (this.config.xuCheCmd) {
@@ -1186,13 +1195,11 @@ class Yunguo extends BaseEvent {
 				fc.sendCmd("普攻");
 				return;
 			}
-
 		}
 
 		const facheCd = this.markdownElementContent.includes("才能发起组队");
-		const seconds = this.markdownElementContent.match(
-			/你还还有(\d+)秒冷却才能发起组队/
-		)?.[1];
+		const seconds =
+			this.markdownElementContent.match(/你还还有(\d+)秒冷却才能发起组队/)?.[1];
 		if (facheCd && seconds) {
 			await sleep(Number(seconds) * 1e3 + 3e3);
 			await this.setYunGuoData({ isInChe: false, isFaCheCD: false });
@@ -1212,17 +1219,21 @@ class Yunguo extends BaseEvent {
 			fc.sendCmd(this.config.faCheCmd);
 			return;
 		}
-
 	}
 
 	async 傀儡() {
 		const 加 = this.textElementContent.includes("+");
-		if ((加 && !this.config.klmgc) || (加 && this.config.klmgc && !this.containsAny(this.textElementContent, this.config.klmgc))) {
+		if (
+			(加 && !this.config.klmgc) ||
+			(加 &&
+				this.config.klmgc &&
+				!this.containsAny(this.textElementContent, this.config.klmgc))
+		) {
 			const 傀儡 = this.groups.get("傀儡");
 			const 傀儡信息 = this.filterChars(this.textElementContent, "+");
 			console.log("傀儡", {
 				qqMsg: this.message.qqMsg,
-				Content: 傀儡信息
+				Content: 傀儡信息,
 			});
 
 			const kuileiCmdTemp = `${傀儡信息}`;
@@ -1230,9 +1241,13 @@ class Yunguo extends BaseEvent {
 
 			// await sleep(1500);
 			if (kuileiCmdTemp.match(/去(\d+)/)) {
-				const 跟车次序修改 = this.getNumberValue(kuileiCmdTemp.match(/去(\d+)/)?.[1]);
+				const 跟车次序修改 = this.getNumberValue(
+					kuileiCmdTemp.match(/去(\d+)/)?.[1]
+				);
 				await linPluginAPI.setConfig("跟车次序", 跟车次序修改);
-				傀儡.wusendCmd(`当前上车次序为 ${跟车次序修改}(带头),若需要更改请发送"去xx"`);
+				傀儡.wusendCmd(
+					`当前上车次序为 ${跟车次序修改}(带头),若需要更改请发送"去xx"`
+				);
 			} else if (kuileiCmdTemp.includes("车头")) {
 				if (kuileiCmdTemp.includes("关闭车头")) {
 					await linPluginAPI.setConfig("autoFaCheFlag", false);
@@ -1252,12 +1267,20 @@ class Yunguo extends BaseEvent {
 					傀儡.wusendCmd(" 已开启跟车");
 				}
 			} else if (kuileiCmdTemp.includes("配置")) {
-				傀儡.wusendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序}(带车头),跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
+				傀儡.wusendCmd(
+					` 配置信息=>是否跟车: ${
+						this.config.自动跟车Flag
+					},上车次序为 ${跟车次序}(带车头),跟车间隔为 ${Number(
+						this.config.跟车间隔
+					)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${
+						this.config.faCheCmd
+					},发车间隔为 ${Number(this.config.发车时间)}毫秒`
+				);
 			} else if (kuileiCmdTemp.includes("多普攻")) {
 				let cs: number = 0;
 				for (let i = 0; i < 10; i++) {
 					cs = cs + 1;
-					sleep(1000*(cs*2));
+					sleep(1000 * (cs * 2));
 					傀儡.klsendCmd("普攻");
 				}
 			} else if (kuileiCmdTemp.includes("多团本普攻")) {
@@ -1267,7 +1290,6 @@ class Yunguo extends BaseEvent {
 			} else {
 				傀儡.klsendCmd(kuileiCmdTemp);
 			}
-
 		}
 	}
 
@@ -1362,13 +1384,14 @@ class Yunguo extends BaseEvent {
 				return;
 			}
 
-			const is圣物背包 =
-				this.markdownElementContent.includes("圣物背包信息")
+			const is圣物背包 = this.markdownElementContent.includes("圣物背包信息");
 			if (is圣物背包) {
 				await this.setYunGuoData({
-					自动分解_圣物背包页码: (this.yunGuoData.自动分解_圣物背包页码 ?? 0) + 1,
+					自动分解_圣物背包页码:
+						(this.yunGuoData.自动分解_圣物背包页码 ?? 0) + 1,
 				});
-				const regex = /#■ (\d+).(.*)\(lv\.(\d+)\)\r\>主词条\：(.*)\+(((\d+)\.(\d+))|(\d+))/g;
+				const regex =
+					/#■ (\d+).(.*)\(lv\.(\d+)\)\r\>主词条\：(.*)\+(((\d+)\.(\d+))|(\d+))/g;
 				const matches = this.markdownElementContent.matchAll(regex);
 				if ([...matches].length === 0) {
 					await this.setYunGuoData({ 自动分解_圣物背包页码: 1 });
@@ -1378,7 +1401,11 @@ class Yunguo extends BaseEvent {
 				for (const match of this.markdownElementContent.matchAll(regex)) {
 					const [, id, name, lv, type, bonus] = match;
 					// console.log({ id, name, lv, type, bonus, match });
-					if (Number(bonus) >= this.getNumberValue(this.config.自动分解_主词条数值)&&Number(lv)<this.getNumberValue(2)) {
+					if (
+						Number(bonus) >=
+							this.getNumberValue(this.config.自动分解_主词条数值) &&
+						Number(lv) < this.getNumberValue(2)
+					) {
 						圣物_id = id;
 						break;
 					}
@@ -1410,7 +1437,7 @@ class Yunguo extends BaseEvent {
 			}
 		}
 	}
-	
+
 	async on闭关() {
 		if (this.message.peerUin !== this.config.闭关群) {
 			return;
@@ -1418,9 +1445,7 @@ class Yunguo extends BaseEvent {
 		const 闭关 = this.groups.get("闭关");
 		if (this.isAtSelf) {
 			const biguanCd = this.markdownElementContent.includes("闭关失败");
-			const seconds = this.markdownElementContent.match(
-				/还有(\d+)秒cd/
-			)?.[1];
+			const seconds = this.markdownElementContent.match(/还有(\d+)秒cd/)?.[1];
 			if (biguanCd && seconds) {
 				await sleep(Number(seconds) * 1e3 + 3e3);
 				闭关.ygsendCmd(`闭关${this.config.闭关间隔}`);
@@ -1459,7 +1484,6 @@ class Yunguo extends BaseEvent {
 					其他.wusendCmd(this.config.回复信息内容一);
 				}
 			}
-
 		}
 
 		//消息二
@@ -1481,7 +1505,6 @@ class Yunguo extends BaseEvent {
 					其他.wusendCmd(this.config.回复信息内容二);
 				}
 			}
-
 		}
 
 		//消息三
@@ -1503,9 +1526,7 @@ class Yunguo extends BaseEvent {
 					其他.wusendCmd(this.config.回复信息内容三);
 				}
 			}
-
 		}
-
 	}
 }
 

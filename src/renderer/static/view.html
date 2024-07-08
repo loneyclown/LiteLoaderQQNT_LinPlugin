@@ -495,4 +495,40 @@
 					</setting-item>
 				</setting-panel>
 	</setting-section>
+
+	<setting-section data-title="房东人生" class="fandong">
+
+		<setting-panel>
+			<setting-list data-direction="column">
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>房东UID: </setting-text>
+							<input key="房东Uid" placeholder="请输入你的房东UID" />
+						</div>
+					</div>
+				</setting-item>
+			</setting-list>
+		</setting-panel>
+
+		<setting-panel>
+			<setting-list is-collapsible data-direction="column" data-title="招租">
+				<setting-item>
+					<div class="line-item">
+						<div class="row between">
+							<setting-text class="line-item-title">招租功能</setting-text>
+							<setting-switch key="招租Flag"></setting-switch>
+						</div>
+						<div class="row between">
+							<setting-text data-type="secondary">去设置好的需要刷招租的群里点一下招租客。</setting-text>
+						</div>
+						<div style="margin-top: 14px" class="row">
+							<setting-text>招租群: </setting-text>
+							<input key="招租群uin" placeholder="请输入需要招租的群号" />
+						</div>
+					</div>
+				</setting-item>
+			</setting-list>
+		</setting-panel>
+	</setting-section>
 </div>

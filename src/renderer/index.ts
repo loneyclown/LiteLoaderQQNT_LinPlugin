@@ -1,8 +1,10 @@
 import { sleep } from "../common/utils";
+import FangDong from "./event/fangdong";
 import Message, { NtQQMsg } from "./event/message";
 import WuxiaEvent from "./event/wuxia";
 import Yunguo from "./event/yunguo";
 import { Group, PlainText } from "./lib/euphony/src";
+import initFangDongSettingView from "./view/fangdong";
 import initYunguoSettingView from "./view/yunguo";
 
 const linPluginAPI = window.linPluginAPI;
@@ -41,6 +43,7 @@ export const onSettingWindowCreated = async (view: Element) => {
 	try {
 		await initView(view);
 		await initYunguoSettingView(view);
+		await initFangDongSettingView(view);
 	} catch (error) {
 		// log.logger.error("渲染层出错", error);
 		alert(`渲染层出错-${error.toString()}`);
@@ -55,20 +58,20 @@ const init = async () => {
 			try {
 				const message = new Message(msgList);
 
-				if (message.qqMsg && message.qqMsg.senderUin === "2189396527") {
-					const msg = message.elements.find((e) => e.elementType === 1);
-					// const find = arr.find((e) => e.textElement.content === "锵锵！");
-					// if (find) {
-					const group = new Group(message.qqMsg.peerUin);
-					group.sendMessage(new PlainText(msg.textElement.content));
-					// }
-				}
+				// if (message.qqMsg && message.qqMsg.senderUin === "2189396527") {
+				// 	const msg = message.elements.find((e) => e.elementType === 1);
+				// 	const group = new Group(message.qqMsg.peerUin);
+				// 	group.sendMessage(new PlainText(msg.textElement.content));
+				// }
 
 				const yunguo = new Yunguo(message);
 				yunguo.onRecvActiveMsg();
 
-				const wuxiaEvent = new WuxiaEvent(message);
-				wuxiaEvent.onRecvActiveMsg();
+				const fandong = new FangDong(message);
+				fandong.onRecvActiveMsg();
+
+				// const wuxiaEvent = new WuxiaEvent(message);
+				// wuxiaEvent.onRecvActiveMsg();
 			} catch (error) {
 				pluginLog("onRecvActiveMsg监听错误", error, "error");
 			}

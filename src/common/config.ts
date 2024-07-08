@@ -152,6 +152,13 @@ export interface ConfigType {
 	回复信息内容三: any;
 	循环Flag三: boolean;
 	执行回复Flag三: boolean;
+
+	// 房东人生配置
+	房东Uid: string;
+	/** 房东数据缓存 */
+	fangDongDataCache: Record<string, any>;
+	招租Flag: boolean;
+	招租群uin: string;
 }
 
 class Config {
