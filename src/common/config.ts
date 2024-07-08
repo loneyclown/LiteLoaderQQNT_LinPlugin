@@ -125,6 +125,33 @@ export interface ConfigType {
 	自动分解_Flag: boolean;
 	自动分解_群: any;
 	自动分解_主词条数值: number;
+	打怪指令Flag: boolean;
+	打怪指令群: any;
+	打怪指令间隔: number;
+	打怪指令: string;
+	闭关Flag: boolean;
+	闭关群: any;
+	闭关间隔: number;
+	其他指令群: any;
+	监控人ID: any;
+	监控信息内容一: any;
+	延迟Flag一: boolean;
+	延迟时间一: number;
+	回复信息内容一: any;
+	循环Flag一: boolean;
+	执行回复Flag一: boolean;
+	监控信息内容二: any;
+	延迟Flag二: boolean;
+	延迟时间二: number;
+	回复信息内容二: any;
+	循环Flag二: boolean;
+	执行回复Flag二: boolean;
+	监控信息内容三: any;
+	延迟Flag三: boolean;
+	延迟时间三: number;
+	回复信息内容三: any;
+	循环Flag三: boolean;
+	执行回复Flag三: boolean;
 }
 
 class Config {

@@ -35,18 +35,30 @@ class Group extends EuphonyGroup {
 		this.sendMessage(messageChain);
 	}
 
-	cssendCmd(msg: string) {
+	klsendCmd(msg: string) {
 		const messageChain = new MessageChain();
 		messageChain.append(this.atcs);
 		messageChain.append(new PlainText(msg));
 		this.sendMessage(messageChain);
+	}
+
+	ygsendCmd(msg: string) {
+		const messageChain = new MessageChain();
+		messageChain.append(this.at);
+		messageChain.append(new PlainText(msg));
+		this.sendMessage(messageChain);
+	}
+
+	//无@
+	wusendCmd(msg: string) {
+		this.sendMessage(new PlainText(msg));
 	}
 }
 
 class Yunguo extends BaseEvent {
 	private config: ConfigType;
 	private globalData: GlobalData;
-	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解" | "fc", Group> = new Map();
+	private groups: Map<"sj" | "boss" | "che" | "hc" | "G定时指令" | "G自定义回执" | "kb" | "ck" | "hs" | "gl" | "lc" | "fj" | "sc" | "tz" | "songhua" | "gc" | "傀儡" | "G自动出售" | "G自动分解" | "fc" | "打怪" | "闭关" | "其他", Group> = new Map();
 
 	constructor(message: Message) {
 		super(message);
@@ -75,6 +87,9 @@ class Yunguo extends BaseEvent {
 		this.groups.set("傀儡", new Group(Number(this.message.peerUin), message));
 		this.groups.set("G自动出售", new Group(this.config.自动出售_群, message));
 		this.groups.set("G自动分解", new Group(this.config.自动分解_群, message));
+		this.groups.set("打怪", new Group(this.config.打怪指令群, message));
+		this.groups.set("闭关", new Group(this.config.闭关群, message));
+		this.groups.set("其他", new Group(this.config.其他指令群, message));
 	}
 
 	onRecvActiveMsg() {
@@ -152,10 +167,20 @@ class Yunguo extends BaseEvent {
 			if (this.config.autoFaCheFlag) {
 				this.on自动发车();
 			}
+			if (this.config.打怪指令Flag) {
+				this.on打怪();
+			}
+			if (this.config.闭关Flag) {
+				this.on闭关();
+			}
 		}
 
 		if (this.config.kuilieFlag && this.isAtUid && this.textElementContent && this.textElementContent != " " && this.config.klqxqq.split(',').includes(this.message.senderUin)) {
 			this.傀儡();
+		}
+
+		if (this.isAtUid && this.textElementContent && this.textElementContent != " " && this.config.监控人ID.includes(this.message.senderUin)) {
+			this.其他();
 		}
 	}
 
@@ -1203,30 +1228,44 @@ class Yunguo extends BaseEvent {
 			const kuileiCmdTemp = `${傀儡信息}`;
 			const 跟车次序 = this.getNumberValue(this.config.跟车次序);
 
-			await sleep(1500);
+			// await sleep(1500);
 			if (kuileiCmdTemp.match(/去(\d+)/)) {
 				const 跟车次序修改 = this.getNumberValue(kuileiCmdTemp.match(/去(\d+)/)?.[1]);
 				await linPluginAPI.setConfig("跟车次序", 跟车次序修改);
-				傀儡.sendCmd(`当前上车次序为 ${跟车次序修改}(带头),若需要更改请发送"去xx"`);
+				傀儡.wusendCmd(`当前上车次序为 ${跟车次序修改}(带头),若需要更改请发送"去xx"`);
 			} else if (kuileiCmdTemp.includes("车头")) {
 				if (kuileiCmdTemp.includes("关闭车头")) {
 					await linPluginAPI.setConfig("autoFaCheFlag", false);
 					await linPluginAPI.setConfig("自动跟车Flag", true);
-					傀儡.sendCmd(` 已关闭头，上车次序为 ${跟车次序}(带头)`);
+					傀儡.wusendCmd(` 已关闭头，上车次序为 ${跟车次序}(带头)`);
 				} else {
 					await linPluginAPI.setConfig("autoFaCheFlag", true);
 					await linPluginAPI.setConfig("自动跟车Flag", false);
-					傀儡.sendCmd(" 已成为头，立刻续车，请注意关闭其他头");
+					傀儡.wusendCmd(" 已成为头，立刻续车，请注意关闭其他头");
 				}
 			} else if (kuileiCmdTemp.includes("跟车")) {
 				if (kuileiCmdTemp.includes("关闭跟车")) {
 					await linPluginAPI.setConfig("自动跟车Flag", false);
-					傀儡.sendCmd(` 已关闭跟车`);
+					傀儡.wusendCmd(` 已关闭跟车`);
+				} else {
+					await linPluginAPI.setConfig("自动跟车Flag", true);
+					傀儡.wusendCmd(" 已开启跟车");
 				}
 			} else if (kuileiCmdTemp.includes("配置")) {
-				傀儡.sendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序}(带车头),跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
+				傀儡.wusendCmd(` 配置信息=>是否跟车: ${this.config.自动跟车Flag},上车次序为 ${跟车次序}(带车头),跟车间隔为 ${Number(this.config.跟车间隔)}毫秒,是否发车: ${this.config.autoFaCheFlag},副本指令: ${this.config.faCheCmd},发车间隔为 ${Number(this.config.发车时间)}毫秒`);
+			} else if (kuileiCmdTemp.includes("多普攻")) {
+				let cs: number = 0;
+				for (let i = 0; i < 10; i++) {
+					cs = cs + 1;
+					sleep(1000*(cs*2));
+					傀儡.klsendCmd("普攻");
+				}
+			} else if (kuileiCmdTemp.includes("多团本普攻")) {
+				for (let i = 0; i < 10; i++) {
+					傀儡.klsendCmd("团本普攻");
+				}
 			} else {
-				傀儡.cssendCmd(kuileiCmdTemp);
+				傀儡.klsendCmd(kuileiCmdTemp);
 			}
 
 		}
@@ -1355,6 +1394,118 @@ class Yunguo extends BaseEvent {
 				return;
 			}
 		}
+	}
+
+	async on打怪() {
+		if (this.message.peerUin !== this.config.打怪指令群) {
+			return;
+		}
+		const 打怪 = this.groups.get("打怪");
+		if (this.isAtSelf) {
+			if (this.markdownElementContent.includes("您当前清扫的妖兽为")) {
+				await sleep((this.config.打怪指令间隔 ?? 0) * 1000);
+				if (this.config.打怪指令Flag) {
+					打怪.ygsendCmd(this.config.打怪指令);
+				}
+			}
+		}
+	}
+	
+	async on闭关() {
+		if (this.message.peerUin !== this.config.闭关群) {
+			return;
+		}
+		const 闭关 = this.groups.get("闭关");
+		if (this.isAtSelf) {
+			const biguanCd = this.markdownElementContent.includes("闭关失败");
+			const seconds = this.markdownElementContent.match(
+				/还有(\d+)秒cd/
+			)?.[1];
+			if (biguanCd && seconds) {
+				await sleep(Number(seconds) * 1e3 + 3e3);
+				闭关.ygsendCmd(`闭关${this.config.闭关间隔}`);
+			}
+			if (this.markdownElementContent.includes("开始闭关")) {
+				if (this.config.闭关Flag) {
+					闭关.ygsendCmd(`闭关${this.config.闭关间隔}`);
+				}
+			}
+		}
+	}
+
+	/**无@指令 */
+	async 其他() {
+		if (this.message.peerUin !== this.config.其他指令群) {
+			return;
+		}
+		const 其他 = this.groups.get("其他");
+		const 接收消息 = `${this.textElementContent}`;
+		//消息一
+		if (接收消息.includes(this.config.监控信息内容一)) {
+			if (this.config.循环Flag一) {
+				if (this.config.延迟Flag一) {
+					await sleep((this.config.延迟时间一 ?? 1) * 1000);
+					其他.wusendCmd(this.config.回复信息内容一);
+				} else {
+					其他.wusendCmd(this.config.回复信息内容一);
+				}
+			} else if (!this.config.循环Flag一 && !this.config.执行回复Flag一) {
+				if (this.config.延迟Flag一) {
+					await sleep((this.config.延迟时间一 ?? 1) * 1000);
+					await linPluginAPI.setConfig("执行回复Flag一", true);
+					其他.wusendCmd(this.config.回复信息内容一);
+				} else {
+					await linPluginAPI.setConfig("执行回复Flag一", true);
+					其他.wusendCmd(this.config.回复信息内容一);
+				}
+			}
+
+		}
+
+		//消息二
+		if (接收消息.includes(this.config.监控信息内容二)) {
+			if (this.config.循环Flag二) {
+				if (this.config.延迟Flag二) {
+					await sleep((this.config.延迟时间二 ?? 1) * 1000);
+					其他.wusendCmd(this.config.回复信息内容二);
+				} else {
+					其他.wusendCmd(this.config.回复信息内容二);
+				}
+			} else if (!this.config.循环Flag二 && !this.config.执行回复Flag二) {
+				if (this.config.延迟Flag二) {
+					await sleep((this.config.延迟时间二 ?? 1) * 1000);
+					await linPluginAPI.setConfig("执行回复Flag二", true);
+					其他.wusendCmd(this.config.回复信息内容二);
+				} else {
+					await linPluginAPI.setConfig("执行回复Flag二", true);
+					其他.wusendCmd(this.config.回复信息内容二);
+				}
+			}
+
+		}
+
+		//消息三
+		if (接收消息.includes(this.config.监控信息内容三)) {
+			if (this.config.循环Flag三) {
+				if (this.config.延迟Flag三) {
+					await sleep((this.config.延迟时间三 ?? 1) * 1000);
+					其他.wusendCmd(this.config.回复信息内容三);
+				} else {
+					其他.wusendCmd(this.config.回复信息内容三);
+				}
+			} else if (!this.config.循环Flag三 && !this.config.执行回复Flag三) {
+				if (this.config.延迟Flag三) {
+					await sleep((this.config.延迟时间三 ?? 1) * 1000);
+					await linPluginAPI.setConfig("执行回复Flag三", true);
+					其他.wusendCmd(this.config.回复信息内容三);
+				} else {
+					await linPluginAPI.setConfig("执行回复Flag三", true);
+					其他.wusendCmd(this.config.回复信息内容三);
+				}
+			}
+
+		}
+
 	}
 }
 
