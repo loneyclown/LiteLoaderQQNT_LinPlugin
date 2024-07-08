@@ -369,5 +369,130 @@
 						</setting-item> -->
 			</setting-list>
 		</setting-panel>
+		
+		<setting-panel>
+			<setting-list is-collapsible data-direction="column" data-title="修仙">
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>打怪指令</setting-text>
+							<setting-switch key="打怪指令Flag"></setting-switch>
+							<setting-text data-type="secondary" style="margin-left: 8px">定时发送指令</setting-text>
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input key="打怪指令群" placeholder="打怪指令群号" style="width: 140px" />
+							<input key="打怪指令" placeholder="打怪指令" style="width: 200px" />
+							<input key="打怪指令间隔" placeholder="间隔(秒)" style="width: 100px" />
+						</div>
+					</div>
+				</setting-item>
+				<setting-item>
+					<div class="line-item">
+						<div class="row">
+							<setting-text>闭关</setting-text>
+							<setting-switch key="闭关Flag"></setting-switch>
+							<!-- <setting-text data-type="secondary" style="margin-left: 8px">定时发送指令</setting-text> -->
+						</div>
+						<div style="margin-top: 4px" class="row">
+							<setting-text>群号: </setting-text>
+							<input key="闭关群" placeholder="闭关群号" style="width: 140px" />
+							<input key="闭关间隔" placeholder="间隔(分钟)" style="width: 100px" />
+						</div>
+					</div>
+				</setting-item>
+			</setting-panel>
+
+			<setting-panel>
+				<setting-list is-collapsible data-direction="column" data-title="独立其他">
+					<setting-item>
+						<div class="line-item">
+							<div class="row">
+								<setting-text>群号: </setting-text>
+								<input key="其他指令群" placeholder="指令群号" style="width: 140px" />
+								<setting-text style="margin-left: 10px">监控谁的信息: </setting-text>
+								<input key="监控人ID" placeholder="监控人ID" style="width: 140px" />
+							</div>
+						</div>
+					</setting-item>
+					
+					<!-- 监控一 -->
+					<setting-item>
+						<div class="line-item">
+							<div class="row">
+								<setting-text>监控信息内容(一): </setting-text>
+								<input key="监控信息内容一" placeholder="监控信息内容" style="width: 200px" />
+							</div>
+							<div style="margin-top: 14px" class="row">
+								<setting-text>是否延迟(一)</setting-text>
+								<setting-switch key="延迟Flag一"></setting-switch>
+								<setting-text style="margin-left: 10px">延迟时间(秒)</setting-text>
+								<input key="延迟时间一" placeholder="请输入延迟时间" style="width: 100px" />
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>回复信息内容(一): </setting-text>
+								<input key="回复信息内容一" placeholder="回复信息内容" style="width: 200px" />
+							</div>
+							<div style="margin-top: 14px" class="row">
+								<setting-text>是否循环(一)</setting-text>
+								<setting-switch key="循环Flag一"></setting-switch>
+								<setting-text style="margin-left: 10px">是否已执行回复</setting-text>
+								<setting-switch key="执行回复Flag一"></setting-switch>
+							</div>
+						</div>
+					</setting-item>
+
+					<!-- 监控二 -->
+					<setting-item>
+						<div class="line-item">
+							<div class="row">
+								<setting-text>监控信息内容(二): </setting-text>
+								<input key="监控信息内容二" placeholder="监控信息内容" style="width: 200px" />
+							</div>
+							<div style="margin-top: 14px" class="row">
+								<setting-text>是否延迟(二)</setting-text>
+								<setting-switch key="延迟Flag二"></setting-switch>
+								<setting-text style="margin-left: 10px">延迟时间(秒)</setting-text>
+								<input key="延迟时间二" placeholder="请输入延迟时间" style="width: 100px" />
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>回复信息内容(二): </setting-text>
+								<input key="回复信息内容二" placeholder="回复信息内容" style="width: 200px" />
+							</div>
+							<div style="margin-top: 14px" class="row">
+								<setting-text>是否循环(二)</setting-text>
+								<setting-switch key="循环Flag二"></setting-switch>
+								<setting-text style="margin-left: 10px">是否已执行回复</setting-text>
+								<setting-switch key="执行回复Flag二"></setting-switch>
+							</div>
+						</div>
+					</setting-item>
+
+					<!-- 监控三 -->
+					<setting-item>
+						<div class="line-item">
+							<div class="row">
+								<setting-text>监控信息内容(三): </setting-text>
+								<input key="监控信息内容三" placeholder="监控信息内容" style="width: 200px" />
+							</div>
+							<div style="margin-top: 14px" class="row">
+								<setting-text>是否延迟(三)</setting-text>
+								<setting-switch key="延迟Flag三"></setting-switch>
+								<setting-text style="margin-left: 10px">延迟时间(秒)</setting-text>
+								<input key="延迟时间三" placeholder="请输入延迟时间" style="width: 100px" />
+							</div>
+							<div style="margin-top: 4px" class="row">
+								<setting-text>回复信息内容(三): </setting-text>
+								<input key="回复信息内容三" placeholder="回复信息内容" style="width: 200px" />
+							</div>
+							<div style="margin-top: 14px" class="row">
+								<setting-text>是否循环(三)</setting-text>
+								<setting-switch key="循环Flag三"></setting-switch>
+								<setting-text style="margin-left: 10px">是否已执行回复</setting-text>
+								<setting-switch key="执行回复Flag三"></setting-switch>
+							</div>
+						</div>
+					</setting-item>
+				</setting-panel>
 	</setting-section>
 </div>
