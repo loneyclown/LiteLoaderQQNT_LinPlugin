@@ -63,15 +63,30 @@ class FangDong extends BaseEvent {
 		return linPluginAPI.getConfig("fangDongDataCache");
 	}
 
-	on招租() {
+	async on招租() {
 		const G招租 = this.groups.get("招租");
 
+		console.log(
+			"this.textElementContent",
+			this.isAtSelf,
+			this.message.peerUin === this.config.招租群uin,
+			this.config.招租群uin,
+			this.textElementContent,
+			this.markdownElementContent
+		);
 		if (this.isAtSelf && this.message.peerUin === this.config.招租群uin) {
+			console.log(
+				this.markdownElementContent.includes("租客确认了，快点签约吧"),
+				this.markdownElementContent.includes("新租客来了，快点签约租客吧")
+			);
 			if (
-				this.textElementContent.includes("租客确认了，快点签约吧") ||
-				this.textElementContent.includes("新租客来了，快点签约租客吧")
+				this.markdownElementContent.includes("租客确认了，快点签约吧") ||
+				this.markdownElementContent.includes("新租客来了，快点签约租客吧")
 			) {
+				console.log("G招租", G招租);
 				G招租.sendCmd(" 签约租客");
+				await sleep(3000);
+				G招租.sendCmd(" 招租客");
 			}
 		}
 	}
