@@ -120,7 +120,7 @@ class Yunguo extends BaseEvent {
 				this.onShuaji();
 			}
 			if (this.config.cxhcFlag || this.config.自动合成Flag) {
-				this.on合成();
+				// this.on合成();
 			}
 			if (this.config.kabenFlag) {
 				this.onKaben();

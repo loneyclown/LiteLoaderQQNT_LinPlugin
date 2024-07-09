@@ -4,6 +4,7 @@ import Message, { NtQQMsg } from "./event/message";
 import WuxiaEvent from "./event/wuxia";
 import Yunguo from "./event/yunguo";
 import { Group, PlainText } from "./lib/euphony/src";
+import YunguoMod from "./models/yunguoMod";
 import initFangDongSettingView from "./view/fangdong";
 import initYunguoSettingView from "./view/yunguo";
 
@@ -52,6 +53,7 @@ export const onSettingWindowCreated = async (view: Element) => {
 };
 
 const init = async () => {
+	const yunguoMod = new YunguoMod();
 	window.euphonyNative.subscribeEvent(
 		"nodeIKernelMsgListener/onRecvActiveMsg",
 		({ msgList }: { msgList: NtQQMsg[] }) => {
@@ -66,6 +68,7 @@ const init = async () => {
 
 				const yunguo = new Yunguo(message);
 				yunguo.onRecvActiveMsg();
+				yunguoMod.onRecvActiveMsg(message);
 
 				const fandong = new FangDong(message);
 				fandong.onRecvActiveMsg();
@@ -74,6 +77,20 @@ const init = async () => {
 				// wuxiaEvent.onRecvActiveMsg();
 			} catch (error) {
 				pluginLog("onRecvActiveMsg监听错误", error, "error");
+				console.error("onRecvActiveMsg监听错误", error, "error");
+			}
+		}
+	);
+	window.euphonyNative.subscribeEvent(
+		"nodeIKernelMsgListener/onAddSendMsg",
+		({ msgRecord }) => {
+			try {
+				// console.log("nodeIKernelMsgListener/onAddSendMsg", p);
+				const message = new Message([msgRecord]);
+				yunguoMod.onAddSendMsg(message);
+			} catch (error) {
+				pluginLog("onAddSendMsg监听错误", error, "error");
+				console.error("onAddSendMsg监听错误", error, "error");
 			}
 		}
 	);

@@ -115,10 +115,12 @@ const pluginLog = linPluginAPI.pluginLog;
 class Message {
 	messages: NtQQMsg[];
 	qqMsg: NtQQMsg;
+	globalData: GlobalData;
 
 	constructor(messages: NtQQMsg[] = [] as NtQQMsg[]) {
 		this.messages = messages;
 		this.qqMsg = messages?.[0] ?? ({} as NtQQMsg);
+		this.globalData = linPluginAPI.getGlobalData();
 	}
 
 	findButton(label: string) {
@@ -165,6 +167,33 @@ class Message {
 			return arr;
 		}
 		return [];
+	}
+
+	get markdownElementContent() {
+		const e14 = this.elements.filter((e) => e.elementType === 14);
+		const { markdownElement } = e14?.[0];
+		return markdownElement?.content;
+	}
+
+	get textElementAtNtUid() {
+		const arr = this.elements.filter((e) => e.elementType === 1);
+		const find = arr.find((e) => e.textElement.atNtUid);
+		return find?.textElement.atNtUid;
+	}
+
+	get isAtSelf() {
+		return (
+			this.markdownElementContent.includes(
+				`at_tinyid=${this.globalData.selfUin}`
+			) || this.textElementAtNtUid === this.globalData.selfUid
+		);
+	}
+
+	get noAtTextElementContent() {
+		const e1 = this.elements.filter(
+			(e) => e.elementType === 1 && e.textElement.atType === 0
+		);
+		return e1.map((e) => e.textElement.content).join("");
 	}
 }
 
