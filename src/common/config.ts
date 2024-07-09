@@ -159,6 +159,7 @@ export interface ConfigType {
 	fangDongDataCache: Record<string, any>;
 	招租Flag: boolean;
 	招租群uin: string;
+	比价群uin: string;
 }
 
 class Config {
