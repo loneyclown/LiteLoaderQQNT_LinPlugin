@@ -129,7 +129,7 @@ export default class FangDongMod {
 							nameMatch: nameMatch?.[0],
 							cost,
 							marketPrice,
-							盈亏: Math.round(cost * 0.95 - marketPrice),
+							盈亏: Math.round(marketPrice * 0.95 - cost),
 							// cost95: cost ? cost * 0.95 : null,
 						};
 					};
