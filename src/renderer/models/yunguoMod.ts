@@ -69,7 +69,7 @@ export default class YunguoMod {
 				const { new_持续合成_temp_cmd } = this.data;
 				if (
 					new_持续合成_temp_cmd &&
-					this.recvActiveMsg.markdownElementContent.includes(
+					this.recvActiveMsg.markdownElementContent?.includes(
 						"合成失败，不要气馁"
 					)
 				) {
